@@ -24,7 +24,7 @@ RULES = [
     ('L1-1', '장황한 조사·후치사', r'[을를] 통해|에 있어서?|함에 있어|에 의해|[와과] 관련하여|에 기반하여|을 바탕으로'),
     ('L1-2', '이중 피동', r'되어지|되어진|어지게 된다|어지게 됩니다|여지게 된다|여지게 됩니다'),
     ('L1-3', '한자어 추상명사', r'고도화|제고|역량 강화|기반 마련|체계 구축|방향성|가능성을 제시|중요성|필요성'),
-    ('L1-4', '속격 연쇄 A의 B의 C', rf'[{H}A-Za-z]+의 [{H}A-Za-z]+의 [{H}A-Za-z]+'),
+    ('L1-4', '속격 연쇄 A의 B의 C', rf'[{H}A-Za-z]+의\s+(?:[{H}A-Za-z]+\s+)?[{H}A-Za-z]+의\s+(?:[{H}A-Za-z]+\s+)?[{H}A-Za-z]+'),
     ('L1-5', '가짜 대조', r'단순히|단순한 [^ ]+ 넘어|[^ ]+을 넘어|가 아니라|이 아니라'),
     ('L1-6', '훈계형 결말·결산어', r'결론적으로|따라서|(^|[.!?] )요약하면,?|이를 통해|시사하는 바|주목할 만|매우 중요|할 때입니다|할 때이다|하는 이유다|핵심은|중요한 것은|관건은|과제도 남아|한계도 분명'),
     ('L1-7', '연결어미 뒤 쉼표', rf'[{H}](고|며|지만|면서|아서|어서|거나|으며|므로|는데),'),
@@ -41,7 +41,8 @@ RULES = [
     ('L3-1a', '작성자 지정 원칙문(문맥 검토)', r'성공을 전제하지 않(?:는다|습니다|음)'),
     # Layer 3: manifesto endings, collocations, compressed nouns, calqued questions
     ('L3-2', '영어 직역 연어', r'효과를 절제|절제한다|비용을 (?:세|센다|셉니다|셀)|셀지|질문으로 적|가정을 남|예산을 태|신호를 되먹'),
-    ('L3-3', '과압축 명사구 후보', rf'([{H}A-Za-z0-9]+·){{2,}}[{H}A-Za-z0-9]+의 |조기 종료\s*·\s*재샘플링의 오판 비용'),
+    ('L3-3', '과압축 명사구 후보', rf'[{H}]+(?:\s+[{H}]+)?(?:\s*·\s*[{H}]+(?:\s+[{H}]+)?)+의\s+(?:[{H}]+\s+){{0,2}}(?:비용|오차|이득|효과)(?=[을를은는이가\s.,!?]|$)'
+                                         rf'|[{H}]+\s+[{H}]+의\s+[{H}]+\s+(?:비용|오차|이득|효과)(?=[을를은는이가\s.,!?]|$)'),
     ('L3-4', '번역투 간접의문문', r'무엇을 [^.]{0,30}(하고|이고) 어떤 [^.]{0,30}지|(무엇을|어떤|어디에|어디서) [^.]{0,30}(는지|을지|할지|ㄹ지) (정한|적는|기록|결정)'),
 ]
 
@@ -101,7 +102,9 @@ def scan(text, rules, n_examples):
     # L3-1: runs of declarative endings
     sents = [re.sub(r'\s+', ' ', s).strip() for s in SENT_END.split(text)]
     sents = [s for s in sents if len(s) > 6 and re.search(f'[{H}]', s)]
-    decl = ENDINGS[1][1]
+    # Repeated present-tense instructions are candidates, not proof of slop.
+    # Past-tense results and existence statements remain in the register summary only.
+    decl = re.compile(r'(?:한다|않는다)[.?!]?$')
     runs, cur = [], []
     for s in sents:
         if decl.search(s):
@@ -112,7 +115,7 @@ def scan(text, rules, n_examples):
             cur = []
     if len(cur) >= 3:
         runs.append(cur)
-    print(f'{"L3-1":7} {len(runs):>4}  선언형 종결 3문장 이상 연속(십계명식)')
+    print(f'{"L3-1":7} {len(runs):>4}  현재형 종결 3문장 이상 연속(검토 후보)')
     for r in runs[:n_examples]:
         print('          · ' + ' / '.join(x[:40] for x in r[:3]))
     print('\n종결어미 분포(문장 단위, 참고용)')

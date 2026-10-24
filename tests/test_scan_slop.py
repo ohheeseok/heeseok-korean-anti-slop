@@ -44,6 +44,21 @@ class ScanTests(unittest.TestCase):
         self.assertEqual(sum(self.run_scan(text).values()), 0)
         self.assertEqual(sum(self.run_scan('`성공을 전제하지 않는다.` "조기 종료·재샘플링의 오판 비용"', '--skip-quoted').values()), 0)
 
+    def test_generalized_noun_candidates(self):
+        for text in ['학습 중단·재시작의 판정 비용', '학습·추론의 연산 비용', '병렬 확정의 의존성 오차', '이해 감독의 생성 이득']:
+            with self.subTest(text=text):
+                self.assertGreater(self.run_scan(text)['L3-3'], 0)
+        self.assertEqual(self.run_scan('VAE·VQ·FSQ의 성능을 비교한다.')['L3-3'], 0)
+        self.assertGreater(self.run_scan('기업의 안전한 데이터의 관리 효율')['L1-4'], 0)
+
+    def test_past_tense_is_not_present_dictum(self):
+        self.assertEqual(self.run_scan('자료를 수집했다. 결과는 유의하였다. 부록에 원자료가 있다.')['L3-1'], 0)
+
+    def test_literal_phrases_require_context_review(self):
+        # Lexical matches remain visible, so humans must apply the literal-use exception.
+        self.assertGreater(self.run_scan('실제 양식의 6칸을 채운다. 장치의 손잡이를 돌린다.')['L2-1'], 0)
+        self.assertGreater(self.run_scan('모델을 3차원 좌표계로 시각화한다.')['L2-2'], 0)
+
     def test_single_sentence_is_not_repetition(self):
         self.assertEqual(self.run_scan('성공을 전제하지 않는다.')['L3-1'], 0)
         self.assertGreater(self.run_scan('자료를 기록한다. 수치를 확인한다. 결과를 검증한다.')['L3-1'], 0)
