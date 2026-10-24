@@ -11,19 +11,25 @@ description: >
   document, headings and captions included. Preserves facts, numbers, citations, terms and
   hedging strength.
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
   scope: "korean-prose"
   compatibility: [claude-code, codex]
 ---
 
 # Korean Anti-Slop (연구·기술 문서용)
 
-연구·기술 문서의 한국어에서 LLM 특유의 말투를 찾아 한국어 원어민 연구자와 엔지니어가
-실제로 쓰는 문장으로 고치는 실행 지침입니다. 세부 규칙과 사례는 단계에
-필요할 때만 불러옵니다.
+연구·기술 문서에서 작성자가 피하고 싶은 AI 문체를 찾아 명료한 한국어로 고치는 실행 지침입니다.
+교정 대상은 **은유·경구형 슬롭(Metaphor & Aphoristic Slop)**, **은유·수사학 슬롭(Rhetorical Slop)**,
+**초압축 메니페스토 슬롭(Hyper-Compressed Manifesto Slop)**, **원칙주의적 의사 엄밀성(Performative Epistemic Rigor)**입니다.
+이 명칭들은 이 스킬의 편집 분류이며 사실·수치·인용·전문 용어·주장의 강도를 보존하면서 작성자의 문체 선호를 적용합니다.
+
+문체를 소개하거나 발생 원인을 설명할 때는 [문체 안내](references/style-patterns.md)를 참고하십시오.
+“영어로 먼저 구상한 뒤 직역한다”는 설명은 확인된 내부 동작이 아닌 가설로 명시합니다.
+세부 규칙과 사례는 필요할 때만 불러옵니다.
 
 | Reference | 불러올 때 |
 |---|---|
+| `references/style-patterns.md` | 네 가지 문체 명칭, 대표 예시, 작성자 선호, 발생 원인 설명의 범위 |
 | `references/layer1-translationese.md` | 번역투, 한자어 추상명사 체인, 가짜 대조, 훈계형 결말, 문장부호·서식 남용 |
 | `references/layer2-metaphor-aphorism.md` | 은유 동사·명사, 경구형 제목, 정의형 은유 등식, 무생물 행위주 |
 | `references/layer3-manifesto-collocation.md` | 선언형 종결 반복, 영어 직역 연어, 과압축 명사구, 번역투 간접의문문 |

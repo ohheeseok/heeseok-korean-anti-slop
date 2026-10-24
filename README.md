@@ -4,6 +4,27 @@
 
 문체 교정 지침과 Python 검사기를 제공합니다. 검사기는 의심 표현을 표시하며 문맥에 따른 교정은 스킬을 사용하는 에이전트와 작성자가 판단합니다. **AI 작성 여부를 판별하는 도구는 아닙니다.**
 
+## 어떤 AI 문체를 고치나요?
+
+이 스킬은 작성자가 피하고 싶은 다음 문체를 교정합니다. 네 명칭은 이 저장소에서 사용하는 편집 분류이며 서로 겹칠 수 있습니다.
+
+| 문체 | 대표 패턴 | 교정 대상 |
+| --- | --- | --- |
+| **은유·경구형 슬롭(Metaphor & Aphoristic Slop)** | `6칸을 채운다`, `손잡이를 돌린다`, `사람은 하나지만 자리는 두 개입니다` | 실제 작업을 대신하는 은유와 경구형 대조 |
+| **은유·수사학 슬롭(Rhetorical Slop)** | `진짜 무대가 시작됩니다`, `본질은 속도가 아니라 밀도입니다` | 설명보다 앞서는 비유·수사·정의형 단언 |
+| **초압축 메니페스토 슬롭(Hyper-Compressed Manifesto Slop)** | `성공을 전제하지 않는다`, `조기 종료·재샘플링의 오판 비용을 기록한다` | 조건과 대상을 압축한 원칙문 나열 |
+| **원칙주의적 의사 엄밀성(Performative Epistemic Rigor)** | `연구 부재를 단정하지 않고 비교 조건과 반증 가능한 질문으로 적는다`, `효과를 절제한다` | 엄밀한 원칙처럼 들리지만 조건·기준·호응이 불분명한 문체 |
+
+앞의 두 문체는 주로 L2, 뒤의 두 문체는 주로 L3에서 다룹니다. 자세한 설명은 [문체 안내](references/style-patterns.md)에 있습니다.
+
+### 왜 이런 문체가 나왔는가?
+
+“군더더기 없이 핵심 원칙만 요약해”라는 요청에 영어 격언형 지침을 직역한 듯한 문체가 나올 수 있다는 **설명 가설**입니다.
+
+> Never presuppose success. Count the cost of early stopping. Temper the effect of plan modifications.
+
+위 문장은 번역투를 설명하기 위한 가상의 예시입니다. “LLM이 영어로 먼저 구상한 뒤 한국어로 직역한다”는 내부 과정을 확인한 자료는 아닙니다. 이 스킬은 원인을 단정하지 않고 작성자가 원치 않는 출력 패턴을 교정합니다. [가설의 범위와 교정 기준](references/style-patterns.md)
+
 ## 세 가지 교정 레이어
 
 | 레이어 | 검토하는 표현 | 교정 방향 |
@@ -146,6 +167,7 @@ heeseok-korean-anti-slop/
 ├── README.md
 ├── CHANGELOG.md
 ├── references/
+│   ├── style-patterns.md
 │   ├── layer1-translationese.md
 │   ├── layer2-metaphor-aphorism.md
 │   ├── layer3-manifesto-collocation.md
