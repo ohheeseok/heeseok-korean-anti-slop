@@ -1,5 +1,6 @@
 ---
 name: heeseok-korean-anti-slop
+license: MIT
 description: >
   Edit Korean research, technical, instructional, and presentation prose to remove
   translationese, abstract noun chains, decorative metaphors, aphorisms, compressed

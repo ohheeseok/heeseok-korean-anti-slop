@@ -149,3 +149,7 @@ python scripts/scan_slop.py style-guide.md --skip-quoted
 im-not-ai, korean-humanizer 등 공개 지침에서 연구·기술 문서에 필요한 편집 원칙을 선별했습니다. 전체 분류 목록이나 다중 에이전트 실행·자동 복원 기능을 통합한 것은 아닙니다. [출처와 반영 범위](references/sources.md)를 확인할 수 있습니다.
 
 Codex·Claude·Gemini를 사용해 작성하고 검토했습니다. 검토 의견은 원문 대조와 코드 실행 결과를 확인한 뒤 반영했습니다. 후보 수나 도구 간 동의 수를 품질 점수로 사용하지 않습니다. [이전 교차 검토 기록](docs/review-2026-10-24.md)
+
+## 라이선스
+
+[MIT License](LICENSE). Copyright © 2026 Heeseok Oh.
