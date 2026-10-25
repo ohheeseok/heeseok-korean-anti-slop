@@ -45,6 +45,7 @@ RULES = [
     ('L2-9', '기술 용어의 캐릭터화·서사화 후보', r'(?:호라이즌|파라미터|변수|손실|모델|지표)\s*(?:[2-9]|두|세|네)\s*형제'
                                                   r'|(?:액션|분포|모드)[^\n.?!]{0,28}살아남'
                                                   r'|(?:정책|네트워크)[^\n.?!]{0,18}모델[^\n.?!]{0,10}심는'),
+    ('L2-10', '감각적으로 꾸민 추상어 후보', r'(?:정서|감정|여운|맥락|메시지|브랜드|서사)의\s*(?:결|농도|밀도)(?=[을를이가은는\s.,!?]|$)'),
     # Personal review candidate; not a grammatical error or automatic rewrite.
     ('L3-1a', '작성자 지정 원칙문(문맥 검토)', r'성공을 전제하지 않(?:는다|습니다|음)'),
     # Layer 3: manifesto endings, collocations, compressed nouns, calqued questions

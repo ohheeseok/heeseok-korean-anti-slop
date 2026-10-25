@@ -89,6 +89,16 @@ class ScanTests(unittest.TestCase):
         self.assertGreater(self.run_scan('한 모드에만 커밋합니다. 외부 교란에 우아하게 반응했습니다.')['L3-2'], 0)
         self.assertEqual(self.run_scan('Git에 변경 사항을 커밋합니다.')['L3-2'], 0)
 
+    def test_sensory_abstract_expression_candidates(self):
+        for text in ['정서의 결을 살립니다.', '여운의 농도를 높입니다.', '맥락의 밀도를 더합니다.', '메시지의 농도를 짙게 합니다.']:
+            with self.subTest(text=text):
+                self.assertGreater(self.run_scan(text)['L2-10'], 0)
+
+    def test_literal_density_and_word_boundary(self):
+        for text in ['용액의 농도를 측정합니다.', '재료의 밀도를 기록합니다.', '나무의 결을 살립니다.', '정서의 결정 요인을 분석합니다.']:
+            with self.subTest(text=text):
+                self.assertEqual(self.run_scan(text)['L2-10'], 0)
+
     def test_single_sentence_is_not_repetition(self):
         self.assertEqual(self.run_scan('성공을 전제하지 않는다.')['L3-1'], 0)
         self.assertGreater(self.run_scan('자료를 기록한다. 수치를 확인한다. 결과를 검증한다.')['L3-1'], 0)

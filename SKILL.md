@@ -1,7 +1,7 @@
 ---
 name: heeseok-korean-anti-slop
 description: >
-  Korean anti-slop editor for research, technical, and instructional writing (연구 노트, 기술 지침, 강의·실습 자료, 논문 초록,
+  Korean anti-slop editor for research, technical, instructional, and presentation writing (연구 노트, 기술 지침, 강의·실습·발표 자료, 논문 초록,
   제안서, 로드맵, 실험 프로토콜, README, 슬라이드·HTML 문서 문구). Removes three layers of
   LLM-style Korean: (1) structural translationese and abstract noun chains, (2) metaphor,
   aphorism, pseudo-definition and personification ("가짜 문학성"), (3) hyper-compressed
@@ -11,14 +11,14 @@ description: >
   document, headings and captions included. Preserves facts, numbers, citations, terms and
   hedging strength.
 metadata:
-  version: "1.0.7"
+  version: "1.0.8"
   scope: "korean-prose"
   compatibility: [claude-code, codex]
 ---
 
-# Korean Anti-Slop (연구·기술·강의 자료용)
+# Korean Anti-Slop (한국어 문서·발표자료용)
 
-연구·기술 문서와 강의·실습 자료에서 작성자가 피하고 싶은 AI 문체를 찾아 명료한 한국어로 고치는 실행 지침입니다.
+연구·기술 문서와 강의·실습·발표 자료에서 작성자가 피하고 싶은 AI 문체를 찾아 명료한 한국어로 고치는 실행 지침입니다.
 교정 대상은 **은유·경구형 슬롭(Metaphor & Aphoristic Slop)**, **은유·수사학 슬롭(Rhetorical Slop)**,
 **초압축 메니페스토 슬롭(Hyper-Compressed Manifesto Slop)**, **원칙주의적 의사 엄밀성(Performative Epistemic Rigor)**입니다.
 이 명칭들은 이 스킬의 편집 분류이며 사실·수치·인용·전문 용어·주장의 강도를 보존하면서 작성자의 문체 선호를 적용합니다.
@@ -33,6 +33,7 @@ metadata:
 | `references/layer1-translationese.md` | 번역투, 한자어 추상명사 체인, 가짜 대조, 훈계형 결말, 문장부호·서식 남용 |
 | `references/layer2-metaphor-aphorism.md` | 은유 동사·명사, 경구형 제목, 정의형 은유 등식, 무생물 행위주 |
 | `references/layer3-manifesto-collocation.md` | 선언형 종결 반복, 영어 직역 연어, 과압축 명사구, 번역투 간접의문문 |
+| `references/presentation-prose.md` | 발표자료의 가짜 대조·함께 보기·감각적 추상어·지시어·명사구 반복·선언·근접 비교·3항 나열을 검토할 때 |
 | `references/technical-explanation.md` | 논문 해설의 병목 진단 반복·캐릭터화된 용어·예측/정제 대조·보장 표현·요약과 본문의 조건 일치를 검토할 때 |
 | `references/lecture-prose.md` | 강의·실습 자료의 손·자리·층 비유, 지시 대상, 상호연결 선언·통합 결론, 교훈형 결말, 대화 재현과 시연 조건을 검토할 때 |
 | `references/register-guide.md` | 문서 종류와 위치(본문·표·캡션·제목)별 종결어미 결정 |
@@ -46,7 +47,7 @@ metadata:
 연구 노트, 기술 지침, 실험 프로토콜, 논문 초록과 본문 초안, 연구 제안서, 학습·연구
 로드맵, README, 슬라이드와 HTML 문서의 제목·캡션·표 칸에 적용합니다.
 
-강의·실습 자료의 화면 설명과 행동 지시도 대상입니다. 초보자에게 말하듯 쓴 문구는 구어체와 존댓말을 유지하면서 지칭 대상과 뜻을 명료하게 합니다.
+일반 발표자료의 화면 설명과 강의·실습의 행동 지시도 대상입니다. 초보자에게 말하듯 쓴 문구는 구어체와 존댓말을 유지하면서 지칭 대상과 뜻을 명료하게 합니다.
 
 일상 채팅, 문학적 글, 인용문 원문, 코드와 로그에는 적용하지 않습니다. 강의 속 대화 재현·예시 프롬프트는 인용으로 구분합니다. 에세이 등 다른 장르에는 그 장르의 문체 기준이 필요합니다.
 
@@ -93,7 +94,7 @@ metadata:
 
 ## 5. 작업 순서
 
-1. **문서 종류와 독자를 정합니다.** 보고서·로드맵인지, 실험 지침인지, 논문 초록인지에 따라 종결어미가 달라집니다. `register-guide.md`의 표로 본문, 표 칸, 캡션, 제목의 어미를 먼저 정하십시오. 강의·실습 자료는 `lecture-prose.md`를 읽고 실제 설명, 학습자의 행동 지시, 시연용 인용을 구분합니다. 실제 기능명과 비유의 대응은 앞뒤 장에서 확인합니다.
+1. **문서 종류와 독자를 정합니다.** 보고서·로드맵인지, 실험 지침인지, 논문 초록인지에 따라 종결어미가 달라집니다. `register-guide.md`의 표로 본문, 표 칸, 캡션, 제목의 어미를 먼저 정하십시오. 강의·실습 자료는 `lecture-prose.md`를 읽고 실제 설명, 학습자의 행동 지시, 시연용 인용을 구분합니다. 실제 기능명과 비유의 대응은 앞뒤 장에서 확인합니다. 발표자료는 `presentation-prose.md`에서 8개 문형과 조합·반복·보존 기준을 확인합니다.
 2. **내용 앵커를 목록으로 만듭니다.** 문장마다 주장, 수치, 조건, 헤지 표지를 적어 두고 교정 후에 하나씩 대조합니다.
 3. **제목부터 고칩니다.** 제목·소제목·영문 kicker·표 머리·범례는 독자가 가장 먼저 보는 곳이고 은유와 경구가 가장 많이 모이는 곳입니다. 제목은 내용을 가리키는 평이한 명사구로 씁니다(`대표 수식 네 개와 적용 조건`, `모델 비교표`).
 4. **L3 → L2 → L1 순서로 고칩니다.** 종결어미와 문장 구조(L3)를 먼저 정해야 은유와 번역투를 고칠 때 문장을 두 번 뜯지 않습니다.
