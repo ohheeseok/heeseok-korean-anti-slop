@@ -11,9 +11,9 @@ whether each one is slop depends on context (technical terms, quotes, natural us
 <title>, <desc>, <meta name="description"> and Korean string literals inside <script>.
 """
 import argparse
-import html as htmllib
 import re
 import sys
+from html.parser import HTMLParser
 from pathlib import Path
 
 H = '가-힣'
@@ -64,20 +64,94 @@ ENDINGS = [
 ]
 
 
+JS_TOKENS = re.compile(
+    r'''(?P<comment>//[^\r\n]*|/\*[\s\S]*?\*/)|'''
+    r'''(?P<quote>['"`])(?P<body>(?:\\[\s\S]|(?!(?P=quote))[\s\S])*?)(?P=quote)'''
+)
+
+
+class ProseHTMLParser(HTMLParser):
+    """Static text extraction; never runs scripts or resolves CSS visibility."""
+
+    BLOCKS = {'p', 'li', 'div', 'section', 'article', 'header', 'footer', 'aside',
+              'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'br', 'tr', 'td', 'th',
+              'dt', 'dd', 'summary', 'figcaption', 'caption'}
+    OMIT = {'head', 'script', 'style', 'template', 'title', 'desc'}
+    JS_TYPES = {'', 'module', 'text/javascript', 'application/javascript',
+                'text/ecmascript', 'application/ecmascript'}
+
+    def __init__(self, hidden):
+        super().__init__(convert_charrefs=True)
+        self.include_hidden = hidden
+        self.parts, self.hidden_parts = [], []
+        self.omitted = 0
+        self.meta_tag, self.meta_parts = None, []
+        self.script_parts = None
+
+    def handle_starttag(self, tag, attrs):
+        attrs = dict(attrs)
+        if self.include_hidden:
+            self.hidden_parts.extend(attrs[k] for k in ('aria-label', 'alt', 'title', 'placeholder')
+                                     if attrs.get(k))
+            if tag == 'meta' and attrs.get('name', '').lower() == 'description':
+                self.hidden_parts.append(attrs.get('content') or '')
+        if tag in self.BLOCKS and not self.omitted:
+            self.parts.append('\n')
+        if tag in self.OMIT:
+            self.omitted += 1
+        if tag in {'title', 'desc'}:
+            self.meta_tag, self.meta_parts = tag, []
+        if tag == 'script' and self.include_hidden and (attrs.get('type') or '').lower() in self.JS_TYPES:
+            self.script_parts = []
+
+    def handle_endtag(self, tag):
+        if tag == self.meta_tag:
+            if self.include_hidden:
+                self.hidden_parts.append(''.join(self.meta_parts))
+            self.meta_tag, self.meta_parts = None, []
+        if tag == 'script' and self.script_parts is not None:
+            for match in JS_TOKENS.finditer(''.join(self.script_parts)):
+                value = match.group('body')
+                if value and re.search(f'[{H}]', value):
+                    self.hidden_parts.append(value)
+            self.script_parts = None
+        if tag in self.OMIT:
+            self.omitted = max(0, self.omitted - 1)
+        if tag in self.BLOCKS and not self.omitted:
+            self.parts.append('\n')
+
+    def handle_data(self, data):
+        if self.script_parts is not None:
+            self.script_parts.append(data)
+        elif self.meta_tag:
+            self.meta_parts.append(data)
+        elif not self.omitted:
+            self.parts.append(data)
+
+
 def visible_text(raw, hidden):
-    """Return (text, hidden_text) from HTML; keeps line structure roughly."""
-    hidden_parts = []
-    if hidden:
-        hidden_parts += re.findall(r'(?:aria-label|alt|title|placeholder)="([^"]*[가-힣][^"]*)"', raw)
-        hidden_parts += re.findall(r'<(?:title|desc)[^>]*>([^<]*[가-힣][^<]*)</(?:title|desc)>', raw)
-        hidden_parts += re.findall(r'<meta name="description" content="([^"]*)"', raw)
-        for js in re.findall(r'<script(?![^>]*application/json)[^>]*>(.*?)</script>', raw, flags=re.S):
-            hidden_parts += re.findall(r"'([^'\n]*[가-힣][^'\n]*)'", js)
-    body = re.sub(r'<(script|style)[^>]*>.*?</\1>', '', raw, flags=re.S)
-    body = re.sub(r'<svg.*?</svg>', lambda m: '\n'.join(re.findall(r'>([^<]+)<', m.group(0))), body, flags=re.S)
-    body = re.sub(r'</(p|li|td|th|h\d|dd|dt|summary|figcaption|caption|div|tr|small)>|<br\s*/?>', '\n', body)
-    body = htmllib.unescape(re.sub(r'<[^>]+>', ' ', body))
-    return body, '\n'.join(htmllib.unescape(h) for h in hidden_parts)
+    """Return body text and optional static labels/JS literals, not rendered DOM."""
+    parser = ProseHTMLParser(hidden)
+    parser.feed(raw)
+    parser.close()
+    return ''.join(parser.parts), '\n'.join(parser.hidden_parts)
+
+
+def skip_quoted_text(text):
+    """Exclude Markdown fences and one-line quotes, preserving line boundaries."""
+    out, fence_char, fence_size = [], None, 0
+    for line in text.splitlines(keepends=True):
+        match = re.match(r'^[ \t]{0,3}(`{3,}|~{3,})', line)
+        if fence_char:
+            if match and match[1][0] == fence_char and len(match[1]) >= fence_size and not line[match.end():].strip():
+                fence_char = None
+            out.append('\n' if line.endswith('\n') else '')
+        elif match and not (match[1][0] == '`' and '`' in line[match.end():]):
+            fence_char, fence_size = match[1][0], len(match[1])
+            out.append('\n' if line.endswith('\n') else '')
+        else:
+            out.append(line)
+    return re.sub(r'''(?<!`)(?P<ticks>`+)(?!`)[^\r\n]*?(?P=ticks)(?!`)|"[^"\r\n]*"|'[^'\r\n]*'|“[^”\r\n]*”|‘[^’\r\n]*’''', ' ', ''.join(out))
 
 
 def load(path, hidden, skip_quoted=False):
@@ -88,12 +162,11 @@ def load(path, hidden, skip_quoted=False):
     else:
         text = raw
     if skip_quoted:
-        # style guides quote the bad examples; drop `code`, "…", “…”, ‘…’ spans
-        text = re.sub(r'`[^`\n]*`|"[^"\n]*"|“[^”\n]*”|‘[^’\n]*’', ' ', text)
+        text = skip_quoted_text(text)
     return text
 
 
-def scan(text, rules, n_examples):
+def scan(text, rules, n_examples, include_declarative=True):
     lines = text.split('\n')
     print(f'{"규칙":7} {"건수":>4}  설명')
     for rid, name, pat in rules:
@@ -110,7 +183,8 @@ def scan(text, rules, n_examples):
             print(f'          L{i}: …{ctx}…')
     # L3-1: runs of declarative endings
     sents = [re.sub(r'\s+', ' ', s).strip() for s in SENT_END.split(text)]
-    sents = [s for s in sents if len(s) > 6 and re.search(f'[{H}]', s)]
+    # Keep short/non-Korean segments: they can interrupt a run.
+    sents = [s for s in sents if s]
     # Repeated present-tense instructions are candidates, not proof of slop.
     # Past-tense results and existence statements remain in the register summary only.
     decl = re.compile(r'(?:한다|않는다)[.?!]?$')
@@ -124,13 +198,21 @@ def scan(text, rules, n_examples):
             cur = []
     if len(cur) >= 3:
         runs.append(cur)
-    print(f'{"L3-1":7} {len(runs):>4}  현재형 종결 3문장 이상 연속(검토 후보)')
-    for r in runs[:n_examples]:
-        print('          · ' + ' / '.join(x[:40] for x in r[:3]))
-    print('\n종결어미 분포(문장 단위, 참고용)')
+    if include_declarative:
+        print(f'{"L3-1":7} {len(runs):>4}  현재형 종결 3문장 이상 연속(검토 후보)')
+        for r in runs[:n_examples]:
+            print('          · ' + ' / '.join(x[:40] for x in r[:3]))
+    print('\n종결어미 분포(문장·행 단위, 참고용)')
     for name, rx in ENDINGS:
         print(f'  {name:28} {sum(1 for s in sents if rx.search(s)):>4}')
-    print(f'  {"전체 문장":28} {len(sents):>4}')
+    print(f'  {"전체 문장·행":28} {len(sents):>4}')
+
+
+def selector_matches(rule_id, selector):
+    """Layer or exact ID, including letter-suffixed child IDs but not digit collisions."""
+    if selector in {'L1', 'L2', 'L3'}:
+        return rule_id.startswith(selector + '-')
+    return rule_id == selector or re.fullmatch(re.escape(selector) + '[a-z]+', rule_id) is not None
 
 
 def main():
@@ -143,13 +225,22 @@ def main():
     ap.add_argument('--hidden', action='store_true', help='HTML 숨은 텍스트와 스크립트 문자열도 검사')
     ap.add_argument('--skip-quoted', action='store_true', help='백틱·따옴표 안의 예시 문구는 검사에서 제외')
     ap.add_argument('--examples', type=int, default=3)
-    ap.add_argument('--rules', default='', help='쉼표로 구분한 규칙 ID 접두어(예: L2,L3-2)')
+    ap.add_argument('--rules', default=None, help='쉼표로 구분한 레이어 또는 규칙 ID(예: L2,L3-2)')
     args = ap.parse_args()
-    prefixes = [p.strip() for p in args.rules.split(',') if p.strip()]
-    rules = [r for r in RULES if not prefixes or any(r[0].startswith(p) for p in prefixes)]
+    if args.examples < 0:
+        ap.error('--examples는 0 이상이어야 합니다.')
+    prefixes = [p.strip() for p in args.rules.split(',')] if args.rules is not None else []
+    if args.rules is not None and (not prefixes or not all(prefixes)):
+        ap.error('--rules에는 레이어 또는 규칙 ID가 필요합니다.')
+    available = [r[0] for r in RULES] + ['L3-1']
+    unknown = [p for p in prefixes if not any(selector_matches(r, p) for r in available)]
+    if unknown:
+        ap.error('검사기에 없는 레이어 또는 규칙 ID: ' + ', '.join(unknown))
+    rules = [r for r in RULES if not prefixes or any(selector_matches(r[0], p) for p in prefixes)]
+    include_declarative = not prefixes or any(selector_matches('L3-1', p) for p in prefixes)
     for f in args.files:
         print(f'=== {f}')
-        scan(load(f, args.hidden, args.skip_quoted), rules, args.examples)
+        scan(load(f, args.hidden, args.skip_quoted), rules, args.examples, include_declarative)
         print()
 
 

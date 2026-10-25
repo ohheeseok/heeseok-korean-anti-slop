@@ -6,7 +6,7 @@
 
 | 출처 | 반영한 원칙과 위치 | 포함하지 않은 기능·범위 |
 |---|---|---|
-| [im-not-ai의 실행 지침](https://github.com/epoko77-ai/im-not-ai/blob/main/skills/humanize-korean/SKILL.md) | 의미·서법 보존 → SKILL 2·3·5절, 번역투·추상명사·대조·쉼표 검토 → L1 | 전체 분류 목록, 경로 선택, 다중 에이전트 실행, 변경률·구조 게이트, 자동 서법 복원은 미구현 |
+| [im-not-ai의 실행 지침](https://github.com/epoko77-ai/im-not-ai/blob/main/skills/humanize-korean/SKILL.md) | 의미·서법 보존 → SKILL 2절·register-guide, 번역투·추상명사·대조·쉼표 검토 → L1 | 전체 분류 목록, 경로 선택, 다중 에이전트 실행, 변경률·구조 게이트, 자동 서법 복원은 미구현 |
 | [korean-humanizer의 지침](https://github.com/dotoricode/korean-humanizer/blob/main/SKILL.md) 및 [카탈로그](https://github.com/dotoricode/korean-humanizer/blob/main/references/ko-ai-signals.md) | 의미·추정 강도 보존, 개인 선호, 문서별 어조 → SKILL·register-guide. 있다·것·수·논리 연결어 보존 → L1-10 | 전체 12범주 카탈로그·브랜드 프로필 로더는 미구현. 발화체·SNS 규칙은 대상 밖. 해당 저장소의 기술 문서 제외 범위는 이 스킬의 연구·기술 문서 목적에 맞게 달리 정함 |
 
 위 파일 본문을 GitHub를 통해 대조했습니다. im-not-ai에서 확인한 트리 리비전은 `b37e0206d31fffd9149bf57168d4d62eb2086bee`, korean-humanizer의 SKILL.md 파일 blob은 `b9c179a4d846b1311c380db660de64cb744b0a11`입니다. 위 링크는 main을 가리키므로 이후 내용이 바뀔 수 있습니다. 지속적인 자동 동기화는 하지 않습니다.

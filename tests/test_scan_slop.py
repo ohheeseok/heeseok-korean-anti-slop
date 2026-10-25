@@ -8,9 +8,9 @@ from pathlib import Path
 SCRIPT = Path(__file__).resolve().parents[1] / 'scripts' / 'scan_slop.py'
 
 class ScanTests(unittest.TestCase):
-    def run_scan(self, text, *args):
+    def run_scan(self, text, *args, suffix='.txt'):
         with tempfile.TemporaryDirectory() as d:
-            p = Path(d) / 'input.txt'
+            p = Path(d) / ('input' + suffix)
             p.write_text(text, encoding='utf-8')
             result = subprocess.run([sys.executable, str(SCRIPT), str(p), *args], capture_output=True, encoding='utf-8', check=True)
             counts = {}
@@ -102,6 +102,104 @@ class ScanTests(unittest.TestCase):
     def test_single_sentence_is_not_repetition(self):
         self.assertEqual(self.run_scan('성공을 전제하지 않는다.')['L3-1'], 0)
         self.assertGreater(self.run_scan('자료를 기록한다. 수치를 확인한다. 결과를 검증한다.')['L3-1'], 0)
+
+    def test_rule_filter_applies_to_declarative_runs(self):
+        text = '자료를 기록한다. 수치를 확인한다. 결과를 검증한다. 손잡이를 돌린다.'
+        counts = self.run_scan(text, '--rules', 'L2')
+        self.assertTrue(counts)
+        self.assertTrue(all(key.startswith('L2') for key in counts))
+        counts = self.run_scan(text, '--rules', 'L3-1')
+        self.assertEqual(set(counts), {'L3-1', 'L3-1a'})
+        self.assertGreater(counts['L3-1'], 0)
+
+    def test_rule_ids_do_not_select_other_digit_suffixes(self):
+        counts = self.run_scan('동시에 해결합니다. 정서의 결을 살립니다.', '--rules', 'L1-1,L2-1')
+        self.assertEqual(set(counts), {'L1-1', 'L2-1'})
+
+    def test_short_sentences_and_interruptions_in_declarative_runs(self):
+        self.assertEqual(self.run_scan('기록한다. 확인한다. 검증한다.')['L3-1'], 1)
+        for text in [
+            '자료를 기록한다. 결과입니다. 수치를 확인한다. 맞습니다. 결과를 검증한다.',
+            '자료를 기록한다. OK. 수치를 확인한다. 결과를 검증한다.',
+        ]:
+            with self.subTest(text=text):
+                self.assertEqual(self.run_scan(text)['L3-1'], 0)
+
+    def test_html_hidden_text_and_body_are_separate(self):
+        text = '''<HEAD><TITLE>정서의 결</TITLE><STYLE>맥락의 밀도</STYLE></HEAD>
+        <p aria-label='여운의 농도'>구체적인 본문입니다.</p>
+        <meta content='혁신적' name='description'>
+        <SCRIPT>const message="효과를 절제한다"; const caption=`맥락의 밀도`;
+        // "정서의 결" is a comment, not a message.
+        </SCRIPT><script type='application/json'>["정서의 결"]</script>'''
+        body = self.run_scan(text, suffix='.html')
+        self.assertEqual(sum(body.values()), 0)
+        hidden = self.run_scan(text, '--hidden', suffix='.html')
+        self.assertEqual(hidden['L2-10'], 3)
+        self.assertEqual(hidden['L3-2'], 1)
+        self.assertEqual(hidden['L1-8'], 1)
+
+    def test_html_inline_markup_and_entities(self):
+        text = '<p>정서의 <em>결</em>을 살립니다.</p><p>여운의&#32;농도를 높입니다.</p>'
+        self.assertEqual(self.run_scan(text, suffix='.html')['L2-10'], 2)
+
+    def test_skip_quoted_excludes_fences_and_preserves_unquoted_prose(self):
+        text = '''```text
+정서의 결을 살립니다.
+```
+~~~text
+여운의 농도를 높입니다.
+~~~
+'정서의 결' “여운의 농도” `맥락의 밀도`
+맥락의 밀도를 더합니다.
+'''
+        self.assertGreater(self.run_scan(text)['L2-10'], 1)
+        self.assertEqual(self.run_scan(text, '--skip-quoted')['L2-10'], 1)
+
+    def test_inline_multiple_backticks_do_not_start_a_fence(self):
+        text = '```정서의 결```\n``여운의 농도``\n맥락의 밀도를 더합니다.'
+        self.assertEqual(self.run_scan(text, '--skip-quoted')['L2-10'], 1)
+
+    def test_empty_rule_selectors_are_rejected(self):
+        for selector in ['', ' ', ',', 'L2,,L3', 'L2,']:
+            with self.subTest(selector=selector):
+                with self.assertRaises(subprocess.CalledProcessError) as context:
+                    self.run_scan('정서의 결을 살립니다.', '--rules', selector)
+                self.assertEqual(context.exception.returncode, 2)
+
+    def test_invalid_options_are_reported(self):
+        for args in [('--rules', 'L9'), ('--rules', 'L1-15'), ('--examples', '-1')]:
+            with self.subTest(args=args):
+                with self.assertRaises(subprocess.CalledProcessError) as context:
+                    self.run_scan('정서의 결을 살립니다.', *args)
+                self.assertEqual(context.exception.returncode, 2)
+
+    def test_multiple_files_preserve_bytes_and_order(self):
+        with tempfile.TemporaryDirectory() as directory:
+            paths = [Path(directory) / 'first.txt', Path(directory) / 'second.html']
+            texts = ['정서의 결을 살립니다.', '<svg><text>여운의 농도</text><desc>맥락의 밀도</desc></svg>']
+            for path, text in zip(paths, texts):
+                path.write_text(text, encoding='utf-8')
+            before = [(path.read_bytes(), path.stat().st_mtime_ns) for path in paths]
+            result = subprocess.run([sys.executable, str(SCRIPT), *map(str, paths), '--hidden',
+                                     '--rules', 'L2-10', '--examples', '0'],
+                                    capture_output=True, encoding='utf-8', check=True)
+            headers = [line for line in result.stdout.splitlines() if line.startswith('=== ')]
+            self.assertEqual(headers, ['=== ' + str(path) for path in paths])
+            self.assertEqual(before, [(path.read_bytes(), path.stat().st_mtime_ns) for path in paths])
+            self.assertEqual(result.returncode, 0)
+
+    def test_examples_limit_controls_output(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'input.txt'
+            path.write_text('정서의 결을 살립니다.\n' * 5, encoding='utf-8')
+            for count in [0, 2]:
+                result = subprocess.run([sys.executable, str(SCRIPT), str(path), '--rules', 'L2-10',
+                                         '--examples', str(count)],
+                                        capture_output=True, encoding='utf-8', check=True)
+                example_lines = [line for line in result.stdout.splitlines()
+                                 if line.lstrip().startswith('L') and ': …' in line]
+                self.assertEqual(len(example_lines), count)
 
 if __name__ == '__main__':
     unittest.main()
