@@ -37,6 +37,10 @@ RULES = [
     ('L2-4', '정의형 은유 등식', rf'(이란|란) [^.]{{0,25}}(이다|입니다)|[{H}]+의 (예술|언어|시그니처|건축물|설계도|심장|엔진|문법|화폐|통화)(이다|입니다|다)'),
     ('L2-5', '무생물 행위주(의인화) 후보', r'놓친다|놓치게|갖춰진다|갖춰지|보여준다|말해준다|드러낸다|증명한다|요구한다|보장하지|보장한다|가린다|가리기'),
     ('L2-6', '해석을 뜻하는 읽는다', r'(로|으로) 읽(는다|지 않|습니다|어야)|읽는다\.|읽지 않는다'),
+    # Lexical lecture candidates only: literal uses and defined teaching aliases need review.
+    ('L2-8', '강의형 신체·공간 은유 후보', r'(?:손|눈)(?:이|을)\s*(?:없어서|없으니|달아|붙여)'
+                                          r'|(?:앱|화면)[^\n.?!]{0,32}(?:다른\s*자리|자리를\s*옮)'
+                                          r'|(?:[1-9]층|[일이삼]층)(?:에서|으로)[^\n.?!]{0,24}(?:부탁|폴더|프롬프트)'),
     # Personal review candidate; not a grammatical error or automatic rewrite.
     ('L3-1a', '작성자 지정 원칙문(문맥 검토)', r'성공을 전제하지 않(?:는다|습니다|음)'),
     # Layer 3: manifesto endings, collocations, compressed nouns, calqued questions

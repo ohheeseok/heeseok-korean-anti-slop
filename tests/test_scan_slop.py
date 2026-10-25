@@ -59,6 +59,16 @@ class ScanTests(unittest.TestCase):
         self.assertGreater(self.run_scan('실제 양식의 6칸을 채운다. 장치의 손잡이를 돌린다.')['L2-1'], 0)
         self.assertGreater(self.run_scan('모델을 3차원 좌표계로 시각화한다.')['L2-2'], 0)
 
+    def test_lecture_metaphor_candidates(self):
+        for text in ['손이 없어서 못 한 겁니다.', 'AI에 눈을 달아 줍니다.', '같은 앱 안에 다른 자리가 있습니다.', '도구 화면에서 자리를 옮깁니다.', '1층에서 부탁하기', '3층으로 옮기고 폴더 지정하기']:
+            with self.subTest(text=text):
+                self.assertGreater(self.run_scan(text)['L2-8'], 0)
+
+    def test_lecture_concrete_instructions_and_literal_terms(self):
+        for text in ['강의실은 3층에 있습니다.', '네트워크의 3계층을 설명합니다.', '장치의 손잡이를 돌립니다.', '화면에서 작업 폴더를 선택합니다.', '복사본으로 작업합니다. 바꾸기 전 목록을 저장합니다. 되돌리기 확인 전에는 실습이 완료되지 않습니다.', '사진 파일 이름을 날짜별로 정리해줘']:
+            with self.subTest(text=text):
+                self.assertEqual(self.run_scan(text)['L2-8'], 0)
+
     def test_single_sentence_is_not_repetition(self):
         self.assertEqual(self.run_scan('성공을 전제하지 않는다.')['L3-1'], 0)
         self.assertGreater(self.run_scan('자료를 기록한다. 수치를 확인한다. 결과를 검증한다.')['L3-1'], 0)

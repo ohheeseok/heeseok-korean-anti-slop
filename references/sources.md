@@ -28,3 +28,7 @@
 [3] evergreentree97, "K-Humanizer: Korean LLM text naturalizer," *GitHub Repository*, v0.1 pre-release, 2026. [Online]. Available: https://github.com/evergreentree97/K-Humanizer
 
 [4] devswha, "patina: Pattern-based humanizer for Korean, English, Chinese, and Japanese (189 named patterns, v9.1.0)," *GitHub Repository*, 2026. [Online]. Available: https://github.com/devswha/patina
+
+## 사용자 제공 강의 사례
+
+v1.0.4는 사용자가 읽기 전용 분석을 요청한 초보자용 1차시 강의 11장의 본문과 구성·검토 문서를 사례로 사용했습니다. 사례에서 도출한 판단 기준은 [강의 자료 지침](lecture-prose.md), 분석 범위와 한계는 [사례 기록](../docs/case-first-contact.md)에 있습니다. 원본 강의 전체·이미지·내부 작업 지시서는 이 저장소에 포함하지 않습니다.
