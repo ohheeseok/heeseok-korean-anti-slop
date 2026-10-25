@@ -11,7 +11,7 @@ description: >
   document, headings and captions included. Preserves facts, numbers, citations, terms and
   hedging strength.
 metadata:
-  version: "1.0.6"
+  version: "1.0.7"
   scope: "korean-prose"
   compatibility: [claude-code, codex]
 ---
@@ -34,7 +34,7 @@ metadata:
 | `references/layer2-metaphor-aphorism.md` | 은유 동사·명사, 경구형 제목, 정의형 은유 등식, 무생물 행위주 |
 | `references/layer3-manifesto-collocation.md` | 선언형 종결 반복, 영어 직역 연어, 과압축 명사구, 번역투 간접의문문 |
 | `references/technical-explanation.md` | 논문 해설의 병목 진단 반복·캐릭터화된 용어·예측/정제 대조·보장 표현·요약과 본문의 조건 일치를 검토할 때 |
-| `references/lecture-prose.md` | 강의·실습 자료의 손·자리·층 비유, 지시 대상, 교훈형 결말, 대화 재현과 시연 조건을 검토할 때 |
+| `references/lecture-prose.md` | 강의·실습 자료의 손·자리·층 비유, 지시 대상, 상호연결 선언·통합 결론, 교훈형 결말, 대화 재현과 시연 조건을 검토할 때 |
 | `references/register-guide.md` | 문서 종류와 위치(본문·표·캡션·제목)별 종결어미 결정 |
 | `references/case-study-roadmap.md` | 실제 교정 전후 사례(생성모델 연구 로드맵, 2026-10) |
 | `references/behavioral-checks.md` | 스킬 수정 후 실제 교정의 의미 보존·문맥 판단을 평가할 때 |
