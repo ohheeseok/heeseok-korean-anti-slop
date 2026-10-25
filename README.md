@@ -138,7 +138,13 @@ python scripts/scan_slop.py style-guide.md --skip-quoted
 - [강의·실습 자료](references/lecture-prose.md): 신체·공간 비유, 시연용 인용, 실제 절차와 완료 조건
 - [논문·기술 해설](references/technical-explanation.md): 병목 진단, 캐릭터화, 근거와 보장 범위
 - [문체 안내](references/style-patterns.md): 은유·경구형 슬롭, 은유·수사학 슬롭, 초압축 메니페스토 슬롭, 원칙주의적 의사 엄밀성
+- [교정·보존 대조 사례](references/contrast-examples.md): 비슷한 표현을 고칠 때와 남길 때의 합성 예시
+- [긴 문서 검토](references/long-document-review.md): 앞뒤 문맥을 유지하며 문단 간 반복과 요약을 대조하는 방법
 - [의미 보존 점검 사례](references/behavioral-checks.md), [전체 점검 기록](docs/full-review-1.1.0.md), [변경 기록](CHANGELOG.md)
+
+스킬의 실제 교정 결과는 [평가 자료와 기준](evals/README.md)으로 검토합니다. 합성 입력과 기존 공개 사례의 발췌를 구분하고, 의미 보존·문체 개선·과교정을 따로 기록합니다. 교육용 재작성이나 합성 사례를 사용자가 수락한 실제 교정 정답으로 취급하지 않습니다.
+
+[1.2.0 실행 기록](evals/runs/2026-10-25/report.md)에는 개선 전후 20개 입력의 실제 출력과 독립 검토, 보완 후 재실행을 구분해 남겼습니다. 단회 실행의 결과이며 일반 문서 전체의 성능 우열을 증명하지 않습니다.
 
 im-not-ai, korean-humanizer 등 공개 지침에서 연구·기술 문서에 필요한 편집 원칙을 선별했습니다. 전체 분류 목록이나 다중 에이전트 실행·자동 복원 기능을 통합한 것은 아닙니다. [출처와 반영 범위](references/sources.md)를 확인할 수 있습니다.
 

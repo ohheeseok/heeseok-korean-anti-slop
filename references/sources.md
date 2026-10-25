@@ -19,6 +19,17 @@
 
 작성자가 지적한 사례는 [문체 안내](style-patterns.md)와 [로드맵 사례](case-study-roadmap.md)에 있습니다. 문법 오류 판정이나 AI 작성자 판별용 분류가 아닙니다.
 
+## 2026-10-25 비교에서 참고한 구성 방식
+
+| 자료 | 참고한 점 | 이 스킬에 반영한 범위 |
+|---|---|---|
+| [yoonmoon](https://github.com/amondnet/yoonmoon/blob/main/skills/humanize/SKILL.md) | 과장 제거와 성분 생략 방지를 함께 점검 | 기존 의미 보존 기준에 필수 조사·어미·조건절의 과삭제 점검을 연결 |
+| [blader/humanizer](https://github.com/blader/humanizer/blob/main/SKILL.md) | 문장뿐 아니라 문단의 대조·경구·반복 결말을 검토 | 긴 문서의 실제 설명과 수사용 반복을 구분하는 기준 보완 |
+| [humanizer-kr](https://github.com/liam-nextdomain/humanizer-kr/blob/main/humanizer-kr/SKILL.md) | 교정 예시와 보존 반례, 절별 검토와 전체 문맥 대조 | 이 스킬용 합성 대조 사례를 새로 작성. 고정 분할 길이·빈도 임계값이나 외부 교정 예시를 정답으로 가져오지 않음 |
+| [K-Humanizer](https://github.com/evergreentree97/K-Humanizer), [ashgreat/humanizer](https://github.com/ashgreat/humanizer/blob/main/SKILL.md) | 사례·교정 쌍·보존 기준·실패 결과를 함께 검토 | 평가 입력의 출처와 실제 출력을 남기고 의미 보존과 문체 개선을 분리 |
+
+외부 예문·데이터셋·실행 스크립트를 복제하지 않았습니다. 새 [대조 사례](contrast-examples.md)와 [평가 자료](../evals/README.md)는 합성 입력과 기존에 공개한 자체 사례에서 만들었습니다. 사용자가 수락한 실제 문단 쌍이 확보되기 전에는 그 종류의 평가 자료가 있다고 보고하지 않습니다. 공개 지침의 설계 방식이 유용하다는 판단과 실제 교정 성능의 우열은 구분합니다.
+
 ## References
 
 [1] epoko77-ai, "im-not-ai: Korean AI writing pattern taxonomy and humanizer," *GitHub Repository*, 2026. [Online]. Available: https://github.com/epoko77-ai/im-not-ai

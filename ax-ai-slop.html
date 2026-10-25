@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="한국어 AI 문체를 의도적으로 극대화한 AX 2페이지 예제. 스킬 1.1.0의 문맥 중심 해설을 제공합니다.">
+<meta name="description" content="한국어 AI 문체를 의도적으로 극대화한 AX 2페이지 예제. 스킬 1.2.0의 문맥 중심 해설을 제공합니다.">
 <title>AX NEXUS — 일부러 만든 AI 말투 과잉 예제</title>
 <style>
 :root{color-scheme:dark;--bg:#0e0d19;--text:#f4f0ff;--muted:#bcb4d1;--line:#ffffff24;--l1:#79dfff;--l2:#e7a5ff;--l3:#ffcd82}
@@ -28,7 +28,7 @@ main{padding-bottom:22px}.sheet{width:1000px;min-height:1414px;margin:0 auto 30p
 </head>
 <body>
 <div class="toolbar" aria-label="문체 예제 도구">
- <div class="toolbar-title">일부러 만든 AI 말투 과잉 예제<small>AX · 2 PAGES · SKILL 1.1.0</small></div>
+ <div class="toolbar-title">일부러 만든 AI 말투 과잉 예제<small>AX · 2 PAGES · SKILL 1.2.0</small></div>
  <div class="tools"><button class="btn" id="annotate" type="button" aria-pressed="false">문체 표시</button><button class="btn light" id="study-open" type="button">유형별 해설</button><button class="btn" id="print" type="button">인쇄 / PDF</button><a class="btn" href="https://github.com/ohheeseok/heeseok-korean-anti-slop" target="_blank" rel="noopener noreferrer">교정 스킬 ↗</a></div>
 </div>
 <p class="status" id="status" role="status">본문은 의도적인 나쁜 예시입니다. <span>‘문체 표시’</span>를 켜고 색으로 강조된 문장을 누르면 해설을 볼 수 있습니다.</p>
@@ -80,12 +80,12 @@ main{padding-bottom:22px}.sheet{width:1000px;min-height:1414px;margin:0 auto 30p
   </div>
  </div>
  <aside class="card closing"><p><span class="example" data-example="closing">도입을 넘어 전환으로. 전환을 넘어 본질로. 이제, 조직의 다음 문법을 쓸 때입니다.</span></p><a class="btn light" href="https://github.com/ohheeseok/heeseok-korean-anti-slop" target="_blank" rel="noopener noreferrer">이 말투를 고치는 스킬 ↗</a></aside>
- <aside class="skill-note"><strong>스킬 1.1.0 · 문체 해설</strong><p><span class="legend l1"></span>L1 번역투·정형 문형 &nbsp; <span class="legend l2"></span>L2 은유·경구 &nbsp; <span class="legend l3"></span>L3 압축 선언·연어<br>최신 스킬은 문맥·사실·수치·주장 강도를 보존하며 교정합니다. 단어 하나나 ‘~한다’ 어미만으로 AI 작성 여부를 판단하지 않습니다. <a href="https://github.com/ohheeseok/heeseok-korean-anti-slop" target="_blank" rel="noopener noreferrer">GitHub에서 SKILL.md와 참고 자료 보기</a></p></aside>
+ <aside class="skill-note"><strong>스킬 1.2.0 · 문체 해설</strong><p><span class="legend l1"></span>L1 번역투·정형 문형 &nbsp; <span class="legend l2"></span>L2 은유·경구 &nbsp; <span class="legend l3"></span>L3 압축 선언·연어<br>최신 스킬은 문맥·사실·수치·주장 강도를 보존하며 교정합니다. 단어 하나나 ‘~한다’ 어미만으로 AI 작성 여부를 판단하지 않습니다. <a href="https://github.com/ohheeseok/heeseok-korean-anti-slop" target="_blank" rel="noopener noreferrer">GitHub에서 SKILL.md와 참고 자료 보기</a></p></aside>
  <footer class="footer"><div class="footer-inner"><span>의도적인 나쁜 예시 · 문체만 다룹니다.</span><span class="motto">ALL FRAMEWORK. LITTLE EXPLANATION.</span><a class="folio" href="#page-1" aria-label="1페이지로 이동">02 / 02 ↑</a></div></footer>
 </section>
 </main>
 <dialog class="dialog" id="study" aria-labelledby="study-title" aria-describedby="study-description">
- <div class="dialog-shell"><header class="dialog-head"><div><small>KOREAN ANTI-SLOP · 1.1.0</small><h2 id="study-title">그럴듯한데, 무엇을 말하는 걸까?</h2><p id="study-description">원문과 고쳐 쓴 문장을 비교합니다. 보충한 설정은 ‘설명용 가상 상황’으로 표시합니다.</p></div><button type="button" class="close" id="study-close" aria-label="해설 닫기">×</button></header>
+ <div class="dialog-shell"><header class="dialog-head"><div><small>KOREAN ANTI-SLOP · 1.2.0</small><h2 id="study-title">그럴듯한데, 무엇을 말하는 걸까?</h2><p id="study-description">원문과 고쳐 쓴 문장을 비교합니다. 보충한 설정은 ‘설명용 가상 상황’으로 표시합니다.</p></div><button type="button" class="close" id="study-close" aria-label="해설 닫기">×</button></header>
  <div class="filters" role="group" aria-label="문체 유형 선택"><button class="btn" type="button" data-filter="all" aria-pressed="true">전체</button><button class="btn" type="button" data-filter="L1" aria-pressed="false">L1 번역투·정형 문형</button><button class="btn" type="button" data-filter="L2" aria-pressed="false">L2 은유·경구</button><button class="btn" type="button" data-filter="L3" aria-pressed="false">L3 선언·연어</button></div>
  <div class="dialog-content" id="study-scroll">
   <details class="style-guide"><summary>이 스킬이 다루는 네 가지 문체</summary><p><strong>은유·경구형 슬롭(Metaphor &amp; Aphoristic Slop)</strong>과 <strong>은유·수사학 슬롭(Rhetorical Slop)</strong>은 비유·대조·정의형 수사가 실제 설명을 대신하는 경우를 다룹니다.</p><p><strong>초압축 메니페스토 슬롭(Hyper-Compressed Manifesto Slop)</strong>과 <strong>원칙주의적 의사 엄밀성(Performative Epistemic Rigor)</strong>은 대상·조건을 압축한 원칙문, 불명확한 연어와 명사구를 다룹니다. 네 명칭은 이 스킬의 편집 분류입니다.</p><p>영어 격언형 지침을 직역한 듯한 문체가 나올 수 있다는 설명은 원인 가설입니다. 모델이 실제로 영어로 먼저 생각한다는 내부 과정을 확인한 주장은 아닙니다. <a href="https://github.com/ohheeseok/heeseok-korean-anti-slop/blob/main/references/style-patterns.md" target="_blank" rel="noopener noreferrer">문체 안내와 가설의 범위 ↗</a></p></details>
