@@ -69,6 +69,26 @@ class ScanTests(unittest.TestCase):
             with self.subTest(text=text):
                 self.assertEqual(self.run_scan(text)['L2-8'], 0)
 
+    def test_technical_rhetoric_candidates(self):
+        for text in ['세 난점을 동시에 해결합니다.', '두 항목이 정확히 일대일로 대응합니다.', '이 성질을 구조적으로 보장합니다.', '별도의 장치 없이 성능이 개선됩니다.', '논문이 보장하는 범위입니다.']:
+            with self.subTest(text=text):
+                self.assertGreater(self.run_scan(text)['L1-12'], 0)
+        for text in ['호라이즌 3형제', '파라미터 세 형제', '다봉 액션 분포는 어떻게 살아남는가', '정책 안에 예측 모델을 심는 행위입니다.']:
+            with self.subTest(text=text):
+                self.assertGreater(self.run_scan(text)['L2-9'], 0)
+
+    def test_technical_terms_and_literal_robot_motion(self):
+        # Existing lexical rules may still flag handles/coordinates; the new rules
+        # must not conflate them with characters or blanket guarantees.
+        text = '에너지 지형과 기울기장을 설명합니다. 관측 호라이즌은 2입니다. 로봇은 크랭크 손잡이를 3회 이상 돌립니다. 본문은 10회, 부록은 16회로 표기합니다.'
+        counts = self.run_scan(text)
+        self.assertEqual(counts['L1-12'], 0)
+        self.assertEqual(counts['L2-9'], 0)
+
+    def test_technical_collocation_candidates_and_git(self):
+        self.assertGreater(self.run_scan('한 모드에만 커밋합니다. 외부 교란에 우아하게 반응했습니다.')['L3-2'], 0)
+        self.assertEqual(self.run_scan('Git에 변경 사항을 커밋합니다.')['L3-2'], 0)
+
     def test_single_sentence_is_not_repetition(self):
         self.assertEqual(self.run_scan('성공을 전제하지 않는다.')['L3-1'], 0)
         self.assertGreater(self.run_scan('자료를 기록한다. 수치를 확인한다. 결과를 검증한다.')['L3-1'], 0)
