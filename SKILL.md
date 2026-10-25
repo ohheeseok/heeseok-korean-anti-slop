@@ -11,7 +11,7 @@ description: >
   document, headings and captions included. Preserves facts, numbers, citations, terms and
   hedging strength.
 metadata:
-  version: "1.0.5"
+  version: "1.0.6"
   scope: "korean-prose"
   compatibility: [claude-code, codex]
 ---
@@ -33,7 +33,7 @@ metadata:
 | `references/layer1-translationese.md` | 번역투, 한자어 추상명사 체인, 가짜 대조, 훈계형 결말, 문장부호·서식 남용 |
 | `references/layer2-metaphor-aphorism.md` | 은유 동사·명사, 경구형 제목, 정의형 은유 등식, 무생물 행위주 |
 | `references/layer3-manifesto-collocation.md` | 선언형 종결 반복, 영어 직역 연어, 과압축 명사구, 번역투 간접의문문 |
-| `references/technical-explanation.md` | 논문 해설의 캐릭터화된 용어·예측/정제 대조·보장 표현·요약과 본문의 조건 일치를 검토할 때 |
+| `references/technical-explanation.md` | 논문 해설의 병목 진단 반복·캐릭터화된 용어·예측/정제 대조·보장 표현·요약과 본문의 조건 일치를 검토할 때 |
 | `references/lecture-prose.md` | 강의·실습 자료의 손·자리·층 비유, 지시 대상, 교훈형 결말, 대화 재현과 시연 조건을 검토할 때 |
 | `references/register-guide.md` | 문서 종류와 위치(본문·표·캡션·제목)별 종결어미 결정 |
 | `references/case-study-roadmap.md` | 실제 교정 전후 사례(생성모델 연구 로드맵, 2026-10) |
@@ -75,6 +75,7 @@ metadata:
 - 학계에서 굳은 영어 기술 용어(token, backbone, head, attention, sampler, prompt 등). 기계적으로 한국어로 옮기지 마십시오.
 - 기술 용어로 굳은 비유: 확률 경로(probability path), 정보 흐름(attention), 병목(bottleneck이 정확한 기술 의미일 때), 파이프라인, 레이어, 백본, 증류(distillation), 에너지 지형, 기울기장, 액션 공간, 관측·예측·실행 호라이즌
 - 헤지 강도: "~일 수 있다", "~로 보인다"를 단정으로 바꾸지 않습니다. 판단과 사실을 구분한 표시("판단:", "가정:")도 그대로 둡니다.
+- `병목`이 기술 용어여도 포괄적 진단을 반복하는 상투어인지 별도로 검토합니다. 실제로 무엇이 어떤 처리·성능을 제한하는지 원문에서 확인하며, 용어 자체를 금지하거나 제약 원인을 추측하지 않습니다.
 - 문자 그대로의 표현: 실제 양식의 칸, 장치·로봇이 조작하는 손잡이, 수학·물리의 좌표계. 같은 단어가 은유 후보로 표시되어도 그대로 둡니다.
 - 교육 목적의 인용·반복: 시연용 대화, 예시 프롬프트, 비교 조건을 같게 유지하려고 반복한 문장. 인용부호가 없어도 말풍선·화자 라벨·전후 비교의 역할로 판단합니다.
 - 실제 절차와 조건: 복사본·백업·중단·확인·복구 순서와 완료 조건. 교훈형 문구를 다듬을 때도 절차를 삭제하거나 새 조건을 추가하지 않습니다.
