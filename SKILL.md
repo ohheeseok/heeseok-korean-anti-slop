@@ -4,12 +4,13 @@ license: MIT
 description: >
   Edit Korean research, technical, instructional, and presentation prose to remove
   translationese, abstract noun chains, decorative metaphors, aphorisms, compressed
-  declarations, and formulaic slide language while preserving meaning and register.
+  declarations, meta-commentary, compliance boilerplate and unsupported hedging,
+  over-justification, and formulaic slide language while preserving meaning and register.
   Use for "AI 말투 없애줘", "번역투·은유 빼줘", "윤문해줘", or review of Korean
   documents, README, slides, captions, and HTML text. Supports read-only case analysis
   for improving the skill; does not identify AI authorship or redesign documents.
 metadata:
-  version: "1.2.0"
+  version: "1.3.0"
   scope: "korean-prose"
   compatibility: [claude-code, codex]
 ---
@@ -18,7 +19,8 @@ metadata:
 
 작성자가 피하고 싶은 한국어 문체를 찾아 실제 대상·행동·관계를 직접 설명하도록 고칩니다.
 은유·경구형 슬롭(Metaphor & Aphoristic Slop), 은유·수사학 슬롭(Rhetorical Slop),
-초압축 메니페스토 슬롭(Hyper-Compressed Manifesto Slop), 원칙주의적 의사 엄밀성(Performative Epistemic Rigor)을 다룹니다.
+초압축 메니페스토 슬롭(Hyper-Compressed Manifesto Slop), 원칙주의적 의사 엄밀성(Performative Epistemic Rigor),
+메타카피(Meta-copy), 규정·면책투(Compliance Register), 과잉 정당화(Over-justification)를 다룹니다.
 이 명칭은 이 스킬의 편집 분류이며 문법 오류·AI 작성 여부를 판정하는 기준이 아닙니다.
 
 ## 1. 요청 범위
@@ -31,7 +33,7 @@ metadata:
 ## 2. 의미 보존이 우선
 
 1. 수치·단위·고유명사·인용·링크·수식·코드 식별자와 고유한 정보를 보존합니다.
-2. 부정·대조·인과·예외·범위·시간·순서·추정·가능성·의무·명령과 평가의 정도를 보존합니다. `가깝다 → B다`, `보장하지 않는다 → 공유하지 않는다`처럼 관계를 바꾸지 않습니다.
+2. 부정·대조·인과·예외·범위·시간·순서·추정·가능성·의무·명령과 평가의 정도를 보존합니다. `가깝다 → B다`, `보장하지 않는다 → 공유하지 않는다`처럼 관계를 바꾸지 않습니다. 면책·헤지를 지우는 것도 추정 강도를 바꾸는 일입니다.
 3. 원문의 말투와 문서 안의 기능을 보존합니다. 문서 종류가 불명확하면 우세한 어미를 유지하고, 평서를 명령·의무로 바꾸지 않습니다.
 4. 이 범위 안에서 작성자의 문체 선호와 자연스러운 호응·간결함을 적용합니다. 자연스러운 원문과 실제 기술 용어를 억지로 바꾸지 않습니다.
 
@@ -47,9 +49,9 @@ metadata:
 
 | 자료 | 사용하는 경우 |
 |---|---|
-| [L1 구조·반복 문형](references/layer1-translationese.md) | 번역투·명사구·가짜 대조·지시어·선언형 예고·근접 비교·3항 나열 |
+| [L1 구조·반복 문형](references/layer1-translationese.md) | 번역투·명사구·가짜 대조·지시어·중요성 선언(L1-6)·근접 비교·3항 나열·메타카피(글 자체에 대한 예고·자평, L1-16) |
 | [L2 은유·경구](references/layer2-metaphor-aphorism.md) | 공간·신체·도구 은유, 경구, 정의형 수사, 행위주 호응 |
-| [L3 압축·연어](references/layer3-manifesto-collocation.md) | 원칙문 나열·어색한 동사 결합·압축 명사구·간접의문문 |
+| [L3 압축·연어](references/layer3-manifesto-collocation.md) | 원칙문 나열·어색한 동사 결합·압축 명사구·간접의문문·규정체 과잉·근거 없는 면책·헤지·과잉 정당화 |
 | [발표자료 8유형](references/presentation-prose.md) | 가짜 대조·함께 보기·감각적 추상어·지시어·명사구 반복·선언·근접 비교·3항 나열 |
 | [강의·실습 자료](references/lecture-prose.md) | 손·자리·층 비유, 시연용 인용, 상호영향 선언, 완료 조건 |
 | [논문·기술 해설](references/technical-explanation.md) | 병목 진단, 캐릭터화, 보장·일대일 대응, 요약과 본문 조건의 일치 |
