@@ -56,7 +56,7 @@ metadata:
 | [강의·실습 자료](references/lecture-prose.md) | 손·자리·층 비유, 시연용 인용, 상호영향 선언, 완료 조건 |
 | [논문·기술 해설](references/technical-explanation.md) | 병목 진단, 캐릭터화, 보장·일대일 대응, 요약과 본문 조건의 일치 |
 | [어미 가이드](references/register-guide.md) | 여러 위치의 어미가 섞여 있고 원문만으로 조정하기 어려운 경우 |
-| [문체 안내](references/style-patterns.md) | 네 분류의 설명과 원인 가설을 소개할 때 |
+| [문체 안내](references/style-patterns.md) | 일곱 가지 문체 분류의 설명과 원인 가설을 소개할 때 |
 | [교정·보존 대조 사례](references/contrast-examples.md) | 같은 형태라도 실제 의미에 따라 고칠지 남길지 판단해야 할 때 |
 | [긴 문서 검토](references/long-document-review.md) | 여러 절·슬라이드에 걸친 반복과 지칭 대상·요약 범위를 검토할 때 |
 
