@@ -99,6 +99,154 @@ class ScanTests(unittest.TestCase):
             with self.subTest(text=text):
                 self.assertEqual(self.run_scan(text)['L2-10'], 0)
 
+    def test_metacopy_candidates(self):
+        for text, count in [
+            ('본 절에서는 제안 방법의 핵심 아이디어를 살펴보고자 한다.', 1),
+            ('이 장에서는 변경 이력을 정리한다.', 1),
+            ('지금부터 이 장표를 통해 수집 지연의 변화를 살펴보겠습니다.', 1),
+            ('결론부터 말씀드리면, 측정값은 동일합니다.', 1),
+            ('한마디로 요약하면, 두 조건의 편차가 큽니다.', 1),
+            ('두 조건의 차이를 한눈에 보여 드립니다.', 1),
+            ('설정 절차를 알기 쉽게 설명했습니다.', 1),
+            ('여러분의 이해를 돕기 위해 핵심만 간결하게 정리했습니다.', 1),
+            ('도움이 되셨기를 바랍니다.', 1),
+            ('도움이 되길 바랍니다.', 1),
+            ('본 글에서는 핵심 개념을 살펴봤습니다.', 1),
+            ('이 글에서는 변경점을 정리했습니다.', 1),
+            ('본 글에서 원리를 알아 보겠습니다.', 1),
+            ('본 절에서는 v2.1 변경점을 살펴본다.', 1),
+        ]:
+            with self.subTest(text=text):
+                self.assertEqual(self.run_scan(text)['L1-16'], count)
+
+    def test_regulatory_and_disclaimer_register_candidates(self):
+        for text, count in [
+            ('사내 규정 제4조에 따른 발급 권한 준수 차원에서, 배포 키의 발급은 운영팀에 한하여 허용됩니다.', 2),
+            ('초기화 명령 실행 전 관련 백업 절차를 사전에 이행하실 것을 권장드립니다.', 2),
+            ('후속 조치가 수반됩니다.', 1),
+            ('동일한 요청의 반복은 지양되어야 합니다.', 1),
+            ('제출 기한에 유의하시기 바랍니다.', 1),
+            ('운영팀에 한해 허용됩니다.', 1),
+            ('사전 이행을 권장 드립니다.', 2),
+            ('후속조치가 수반됩니다.', 1),
+            ('사본 보존이 강력히 권장됩니다.', 1),
+        ]:
+            with self.subTest(text=text):
+                self.assertEqual(self.run_scan(text)['L3-8'], count)
+
+    def test_unsupported_disclaimer_and_hedge_candidates(self):
+        for text, count in [
+            ('본 결과는 다양한 요인에 따라 달라질 수 있으므로 해석에 신중을 기할 필요가 있다.', 2),
+            ('모든 환경에 적용되는 만능 해법은 아니므로 다각적인 검토가 필요합니다.', 2),
+            ('결과는 상황에 따라 다를 수 있습니다.', 1),
+            ('수치의 해석에는 신중한 접근이 필요하다.', 1),
+            ('이 방법이 보편적인 해결책은 아닙니다.', 1),
+            ('전문가에게 문의하세요.', 1),
+            ('이 자료는 참고용으로만 사용하세요.', 1),
+            ('추가 논의의 여지가 있는 것으로 보입니다.', 1),
+            ('보편적인 해결책은 아닐 수 있다.', 1),
+            ('만능 해법이 아닌 이상 검토해야 한다.', 1),
+            ('보안전문가에게 문의하세요.', 1),
+            ('상황에 따라 달라질 수 있습니다.', 1),
+            ('도입 전에 신중한 검토가 필요합니다.', 1),
+        ]:
+            with self.subTest(text=text):
+                self.assertEqual(self.run_scan(text)['L3-9'], count)
+
+    def test_overjustification_candidates(self):
+        for text, count in [
+            ('설정 옵션을 세 개만 둔 것은 기능 부족이 아니라 전략적 설계입니다.', 2),
+            ('이 부분은 확장성을 고려해 의도적으로 분리한 설계입니다.', 1),
+            ('일각에서는 속도가 느리다는 우려를 제기할 수 있으나, 이는 정확도의 가치를 간과한 단편적 시각입니다.', 2),
+            ('파서 테스트를 꼼꼼히 검토했습니다.', 1),
+            ('버그가 아니라 의도된 설계입니다.', 2),
+            ('기능부족이 아니라 전략적 선택입니다.', 2),
+            ('파서를 꼼꼼하게 검토한 결과입니다.', 1),
+            ('안정성을 우선한 합리적인 트레이드오프입니다.', 1),
+        ]:
+            with self.subTest(text=text):
+                self.assertEqual(self.run_scan(text)['L3-10'], count)
+
+    def test_new_rules_preserve_concrete_research_and_technical_prose(self):
+        cases = {
+            'L1-16': [
+                '2장에서는 데이터셋을, 3장에서는 실험을 설명한다.',
+                '이 문서는 v2 마이그레이션 절차만 다룬다.',
+                '제외 기준은 부록 A에 있다.',
+                '10분 실습 후 질문을 받겠습니다.',
+                '이 보고서는 조망권 변화의 영향을 조사했다.',
+                '이 문서는 REST API v2 에러 코드를 정리한 명세서입니다.',
+                '본 절에서는 앞 절에서 소개한 손실 함수를 적용한다.',
+                '이해를 돕기 위해 입출력 예제를 추가했습니다.',
+                '실험 조건은 3장에 설명한다.',
+            ],
+            'L3-8': [
+                '외부 반출은 기관생명윤리위원회 승인 후에만 허용된다.',
+                '사내 규정 제4조에 따라 운영팀만 배포 키를 발급할 수 있습니다.',
+                '개인식별정보는 로그에 저장하지 않아야 한다.',
+                '이 계정에는 배포 권한이 없습니다.',
+                '2차 측정에 한하여 허용 오차를 0.2 mm로 설정했다.',
+                '안전 조치 요구사항을 표에 기록했다.',
+                '고온 조건에 한하여 허용 범위를 5%로 완화했다.',
+                '모든 표본은 IRB 관련 절차에 따라 익명화되었다.',
+            ],
+            'L3-9': [
+                '표본이 12명이고 한 기관에서만 모았으므로 다른 기관에 그대로 적용하기 어려울 수 있다.',
+                '실패할 수 있습니다.',
+                '이 메시지 큐는 최소 1회 전송만 보장한다.',
+                '저조도 조건은 아직 검증하지 않았다.',
+                '인증 모듈 변경이므로 신중한 검토 부탁드립니다.',
+                '캐시 적중률은 워크로드 상황에 따라 달라질 수 있다.',
+                '임상 판단은 반드시 의료 전문가와 상의해야 한다.',
+                '운영상황에 따라 다를 수 있다.',
+            ],
+            'L3-10': [
+                '배치를 키우니 오히려 응답 시간이 길어졌다.',
+                '노이즈를 의도적으로 주입했다.',
+                '메모리 부족으로 불가피하게 학습을 중단했다.',
+                '4GB 메모리 한도 때문에 4비트 양자화를 선택했다.',
+                '기존 클라이언트가 이 필드를 읽으므로 이번 릴리스에서는 유지했습니다.',
+                '실험용 신호를 의도적으로 주입한 뒤 설계 변경 이력을 기록했다.',
+                '의도적으로 높인 설계값을 입력했다.',
+                '실험용 신호를 의도적으로 주입한 뒤에 설계 변경 이력을 기록했다.',
+                '이 오차는 모델의 결함이 아니라 라벨링 오류에서 비롯되었다.',
+                '합리적 선택 이론에 따라 기대 효용을 정식화했다.',
+                '비합리적 선택이 관찰되었다.',
+                '입력값을 철저히 검증합니다.',
+                '의도된 대로 동작합니다.',
+            ],
+        }
+        for rule, texts in cases.items():
+            for text in texts:
+                with self.subTest(rule=rule, text=text):
+                    self.assertEqual(self.run_scan(text)[rule], 0)
+
+    def test_new_bounded_patterns_stay_in_the_same_sentence(self):
+        for rule, text in [
+            ('L1-16', '본 문서는 운영 절차를 다룬다. 배포 로그를 살펴본다.'),
+            ('L1-16', '지금부터 수집을 시작합니다. 결과는 나중에 살펴보겠습니다.'),
+            ('L3-9', '만능 도구를 사용했다. 아니, 사용 기록을 다시 확인했다.'),
+            ('L3-10', '의도적으로 노이즈를 주입했다. 설계는 그대로 두었다.'),
+            ('L3-10', '일부에서는 배포를 연기했다. 작업은 계속할 수 있지만 로그를 먼저 확인한다.'),
+        ]:
+            with self.subTest(rule=rule, text=text):
+                self.assertEqual(self.run_scan(text)[rule], 0)
+
+    def test_new_rules_skip_quoted_examples_and_preserve_unquoted_prose(self):
+        examples = {
+            'L1-16': '결론부터 말씀드리면, 결과는 같습니다.',
+            'L3-8': '제출 기한에 유의하시기 바랍니다.',
+            'L3-9': '이 자료는 참고용으로만 사용하세요.',
+            'L3-10': '파서 테스트를 꼼꼼히 검토했습니다.',
+        }
+        text = '\n'.join(f'“{phrase}” `{phrase}`\n```text\n{phrase}\n```\n{phrase}' for phrase in examples.values())
+        counts = self.run_scan(text)
+        unquoted = self.run_scan(text, '--skip-quoted')
+        for rule in examples:
+            with self.subTest(rule=rule):
+                self.assertEqual(counts[rule], 4)
+                self.assertEqual(unquoted[rule], 1)
+
     def test_single_sentence_is_not_repetition(self):
         self.assertEqual(self.run_scan('성공을 전제하지 않는다.')['L3-1'], 0)
         self.assertGreater(self.run_scan('자료를 기록한다. 수치를 확인한다. 결과를 검증한다.')['L3-1'], 0)
@@ -115,6 +263,15 @@ class ScanTests(unittest.TestCase):
     def test_rule_ids_do_not_select_other_digit_suffixes(self):
         counts = self.run_scan('동시에 해결합니다. 정서의 결을 살립니다.', '--rules', 'L1-1,L2-1')
         self.assertEqual(set(counts), {'L1-1', 'L2-1'})
+
+    def test_new_rule_selectors_distinguish_layers_and_digit_suffixes(self):
+        text = '본 절에서는 결과를 살펴본다. 파서 테스트를 꼼꼼히 검토했습니다.'
+        counts = self.run_scan(text, '--rules', 'L1')
+        self.assertEqual(counts['L1-16'], 1)
+        self.assertTrue(all(key.startswith('L1-') for key in counts))
+        self.assertEqual(set(self.run_scan(text, '--rules', 'L1-1')), {'L1-1'})
+        self.assertEqual(set(self.run_scan(text, '--rules', 'L3-1')), {'L3-1', 'L3-1a'})
+        self.assertEqual(self.run_scan(text, '--rules', 'L3-10'), {'L3-10': 1})
 
     def test_short_sentences_and_interruptions_in_declarative_runs(self):
         self.assertEqual(self.run_scan('기록한다. 확인한다. 검증한다.')['L3-1'], 1)

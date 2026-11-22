@@ -30,6 +30,19 @@
 
 외부 예문·데이터셋·실행 스크립트를 복제하지 않았습니다. 새 [대조 사례](contrast-examples.md)와 [평가 자료](../evals/README.md)는 합성 입력과 기존에 공개한 자체 사례에서 만들었습니다. 사용자가 수락한 실제 문단 쌍이 확보되기 전에는 그 종류의 평가 자료가 있다고 보고하지 않습니다. 공개 지침의 설계 방식이 유용하다는 판단과 실제 교정 성능의 우열은 구분합니다.
 
+## 2026-11-22 메타카피·규정·면책투·과잉 정당화 추가
+
+세 유형은 사용자의 질문에서 시작해 세 모델(Claude, Codex, Gemini)이 독립 답변과 상호 검토를 거쳐 정리했습니다. 논의와 채택하지 않은 제안은 [검토 기록](../docs/review-2026-11-22.md)에 있습니다.
+
+| 자료 | 확인한 내용 | 이 스킬에 반영한 범위 |
+|---|---|---|
+| Hyland & Tse [5] | 학술 글의 메타담화를 글의 구성을 안내하는 표현과 독자와의 관계를 조정하는 표현(헤지·강조어·태도 표지·참여 표지·자기 언급)으로 나누는 대표 문헌 | 이 분류를 빌려 메타담화를 정상 기능으로 보고, 내용·조건·근거를 대신할 때만 교정한다는 이 스킬의 경계를 정함(L1-16·L3-9). 교정 기준 자체는 이 스킬의 편집 판단 |
+| Chang [6] | 에이전트가 원자료를 확장한 보고서에서 원자료보다 강한 주장을 한 뒤 다시 면책하는 현상(over-defensive writing)을 다루고, 반론을 분리하는 실행 구조를 제안. 원인(가상의 AI 심사자를 의식한 글쓰기)은 초록에서 저자의 가정으로 제시 | 일반 문서에서 과잉 주장과 면책의 짝을 근거 수준의 주장으로 합치는 판단(L3-9)은 이 연구를 참고한 이 스킬의 편집 가설. 원인은 가설로만 기록 |
+| Cox 외 [7] | 지시 학습 모델이 일부 과제에서 연쇄 추론(CoT)을 쓰기 전에 답을 정한다고 보고. 사후 추론이 유용할 수 있다는 점도 언급 | 과잉 정당화의 원인 가설 참고. 한국어 문서 문체의 원인을 입증하는 자료로 쓰지 않음 |
+| Turpin 외 [8] | 연쇄 추론 프롬프팅에서 의도적으로 넣은 편향 단서가 답을 바꿔도 모델의 설명이 그 단서를 언급하지 않는 실험 | 위와 같음 |
+
+사용자가 제공한 비교 글의 교정 예시는 원문에 없는 수치·환경·계획을 넣었습니다. 그 문형은 [행동 점검 사례](behavioral-checks.md)의 실패 점검 입력으로만 반영했습니다. 같은 글이 인용한 Inc. 칼럼은 접근이 막혀 확인하지 못했으므로 반영하지 않았습니다. [6]·[7]은 arXiv 초록 페이지에서 서지 정보와 주장 범위를 확인했으며 본문 전체를 검토하지는 않았습니다. [5]·[8]은 이번 작업에서 원문을 다시 열어 보지 않은 기존 문헌입니다.
+
 ## References
 
 [1] epoko77-ai, "im-not-ai: Korean AI writing pattern taxonomy and humanizer," *GitHub Repository*, 2026. [Online]. Available: https://github.com/epoko77-ai/im-not-ai
@@ -39,6 +52,14 @@
 [3] evergreentree97, "K-Humanizer: Korean LLM text naturalizer," *GitHub Repository*, v0.1 pre-release, 2026. [Online]. Available: https://github.com/evergreentree97/K-Humanizer
 
 [4] devswha, "patina: Pattern-based humanizer for Korean, English, Chinese, and Japanese (189 named patterns, v9.1.0)," *GitHub Repository*, 2026. [Online]. Available: https://github.com/devswha/patina
+
+[5] K. Hyland and P. Tse, "Metadiscourse in academic writing: A reappraisal," *Applied Linguistics*, vol. 25, no. 2, pp. 156–177, 2004.
+
+[6] X. Chang, "A harness reducing over-defensive writing in agents by isolating objections," arXiv:2610.36717, Oct. 2026. [Online]. Available: https://arxiv.org/abs/2610.36717
+
+[7] K. Cox, D. Kianersi, and A. Garriga-Alonso, "Post-hoc reasoning in chain of thought: Decoding and steering pre-committed answers," arXiv:2603.01437, Mar. 2026 (v2 Jul. 2026). [Online]. Available: https://arxiv.org/abs/2603.01437
+
+[8] M. Turpin, J. Michael, E. Perez, and S. R. Bowman, "Language models don't always say what they think: Unfaithful explanations in chain-of-thought prompting," in *Advances in Neural Information Processing Systems*, 2023. [Online]. Available: https://arxiv.org/abs/2305.04388
 
 ## 사용자 제공 강의 사례
 
