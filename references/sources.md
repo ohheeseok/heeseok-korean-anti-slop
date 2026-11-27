@@ -19,6 +19,14 @@
 
 작성자가 지적한 사례는 [문체 안내](style-patterns.md)와 [로드맵 사례](case-study-roadmap.md)에 있습니다. 문법 오류 판정이나 AI 작성자 판별용 분류가 아닙니다.
 
+## 사용자 제공 강의 사례
+
+v1.0.4는 사용자가 읽기 전용 분석을 요청한 초보자용 강의 11장을 사례로 사용했습니다. 사례에서 도출한 판단 기준은 [강의 자료 지침](lecture-prose.md)과 [행동 점검 사례](behavioral-checks.md)에 있습니다. 원본 강의와 사례 분석 기록은 이 저장소에 포함하지 않습니다.
+
+## 사용자 제공 기술 해설 사례
+
+v1.0.5는 사용자가 읽기 전용으로 제공한 Diffusion Policy 해설 HTML의 본문·그림 설명·동적 안내 문자열을 분석했습니다. 원 논문의 수학적·실험적 주장 전체를 재검증한 작업은 아닙니다. 편집 기준은 [기술 해설 지침](technical-explanation.md)에 정리했습니다. 원본 HTML과 사례 분석 기록은 이 저장소에 포함하지 않습니다.
+
 ## 2026-10-25 비교에서 참고한 구성 방식
 
 | 자료 | 참고한 점 | 이 스킬에 반영한 범위 |
@@ -75,11 +83,3 @@
 [7] K. Cox, D. Kianersi, and A. Garriga-Alonso, "Post-hoc reasoning in chain of thought: Decoding and steering pre-committed answers," arXiv:2603.01437, Mar. 2026 (v2 Jul. 2026). [Online]. Available: https://arxiv.org/abs/2603.01437
 
 [8] M. Turpin, J. Michael, E. Perez, and S. R. Bowman, "Language models don't always say what they think: Unfaithful explanations in chain-of-thought prompting," in *Advances in Neural Information Processing Systems*, 2023. [Online]. Available: https://arxiv.org/abs/2305.04388
-
-## 사용자 제공 강의 사례
-
-v1.0.4는 사용자가 읽기 전용 분석을 요청한 초보자용 강의 11장을 사례로 사용했습니다. 사례에서 도출한 판단 기준은 [강의 자료 지침](lecture-prose.md)과 [행동 점검 사례](behavioral-checks.md)에 있습니다. 원본 강의와 사례 분석 기록은 이 저장소에 포함하지 않습니다.
-
-## 사용자 제공 기술 해설 사례
-
-v1.0.5는 사용자가 읽기 전용으로 제공한 Diffusion Policy 해설 HTML의 본문·그림 설명·동적 안내 문자열을 분석했습니다. 원 논문의 수학적·실험적 주장 전체를 재검증한 작업은 아닙니다. 편집 기준은 [기술 해설 지침](technical-explanation.md)에 정리했습니다. 원본 HTML과 사례 분석 기록은 이 저장소에 포함하지 않습니다.
