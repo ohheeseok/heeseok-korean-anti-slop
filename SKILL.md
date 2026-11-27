@@ -4,13 +4,13 @@ license: MIT
 description: >
   Edit Korean research, technical, instructional, and presentation prose to remove
   translationese, abstract noun chains, decorative metaphors, aphorisms, compressed
-  declarations, meta-commentary, compliance boilerplate and unsupported hedging,
+  declarations, undefined coined labels, meta-commentary, compliance boilerplate and unsupported hedging,
   over-justification, and formulaic slide language while preserving meaning and register.
   Use for "AI 말투 없애줘", "번역투·은유 빼줘", "윤문해줘", or review of Korean
   documents, README, slides, captions, and HTML text. Supports read-only case analysis
   for improving the skill; does not identify AI authorship or redesign documents.
 metadata:
-  version: "1.3.0"
+  version: "1.4.0"
   scope: "korean-prose"
   compatibility: [claude-code, codex]
 ---
@@ -39,6 +39,8 @@ metadata:
 
 추상어·지시어가 가리키는 대상은 제공된 문장·표·앞뒤 장에서 먼저 찾습니다. 확인되는 부분은 바로 고치고, 뜻이 갈리는 구간만 원문을 유지해 본문 밖에 확인 사항을 적습니다. 항목 이름이 모두 없다는 이유만으로 안전한 표현 교정까지 보류하지 않습니다.
 
+문서가 만든 라벨과 두 단어 압축어(L3-11·L3-3)는 대상이 본문이 아니라 발표 대본·부록·캡션이나 원 논문에 있을 수 있습니다. 같은 자료 안의 다른 채널부터 찾고 원문이나 작성자에게 접근할 수 있으면 그 내용으로 풉니다. 대상을 확인하지 못한 라벨이 있는 행에서는 은유·연어만 바꾸지 않습니다. 표면만 고치면 라벨이 남아 문제가 가려지므로 그 행은 원문으로 두고 같은 라벨의 확인 사항은 라벨 단위로 한 번 적습니다. 라벨과 무관한 다른 행의 교정은 계속합니다.
+
 독자용 정의문을 편집 메모로 간주해 지우지 않습니다. 정의를 다른 문장에 합칠 때는 대상·표나 그림의 위치·적용 범위도 남깁니다. ‘모두·만·각각·아직’이 빠짐없는 적용·한정·구분·상태를 전달하면 어색함을 줄이는 과정에서도 그 뜻을 보존합니다.
 
 원문에 없는 원인·담당자·성과·지표·실험·권한·제품 기능을 보충하지 않습니다. 문장이 나란히 있다는 이유만으로 목적·인과를 새로 연결하거나 넓은 대상을 하나의 예시로 좁히지 않습니다. 설명이 더 필요하다는 이유로 수치의 단위나 실험 설계 등을 추가로 묻지 말고 **교정에 필요한 의미가 불명확할 때만** 확인합니다.
@@ -51,14 +53,14 @@ metadata:
 |---|---|
 | [L1 구조·반복 문형](references/layer1-translationese.md) | 번역투·명사구·가짜 대조·지시어·중요성 선언(L1-6)·근접 비교·3항 나열·메타카피(글 자체에 대한 예고·자평, L1-16) |
 | [L2 은유·경구](references/layer2-metaphor-aphorism.md) | 공간·신체·도구 은유, 경구, 정의형 수사, 행위주 호응 |
-| [L3 압축·연어](references/layer3-manifesto-collocation.md) | 원칙문 나열·어색한 동사 결합·압축 명사구·간접의문문·규정체 과잉·근거 없는 면책·헤지·과잉 정당화 |
+| [L3 압축·연어](references/layer3-manifesto-collocation.md) | 원칙문 나열·어색한 동사 결합·압축 명사구(두 단어 압축 포함)·간접의문문·명사로 끝나는 설명문·규정체 과잉·근거 없는 면책·헤지·과잉 정당화·문서가 만든 라벨(L3-11)·기호를 문법으로 쓰는 행(L3-12) |
 | [발표자료 8유형](references/presentation-prose.md) | 가짜 대조·함께 보기·감각적 추상어·지시어·명사구 반복·선언·근접 비교·3항 나열 |
 | [강의·실습 자료](references/lecture-prose.md) | 손·자리·층 비유, 시연용 인용, 상호영향 선언, 완료 조건 |
 | [논문·기술 해설](references/technical-explanation.md) | 병목 진단, 캐릭터화, 보장·일대일 대응, 요약과 본문 조건의 일치 |
 | [어미 가이드](references/register-guide.md) | 여러 위치의 어미가 섞여 있고 원문만으로 조정하기 어려운 경우 |
 | [문체 안내](references/style-patterns.md) | 일곱 가지 문체 분류의 설명과 원인 가설을 소개할 때 |
 | [교정·보존 대조 사례](references/contrast-examples.md) | 같은 형태라도 실제 의미에 따라 고칠지 남길지 판단해야 할 때 |
-| [긴 문서 검토](references/long-document-review.md) | 여러 절·슬라이드에 걸친 반복과 지칭 대상·요약 범위를 검토할 때 |
+| [긴 문서 검토](references/long-document-review.md) | 여러 절·슬라이드에 걸친 반복과 지칭 대상·요약 범위·반복되는 라벨·상호참조 번호를 검토할 때 |
 
 규칙의 예외와 보존 기준은 해당 참고 문서에서 확인합니다. 예를 들어 실제 손잡이·물리적 좌표축, 정의된 기술 용어, 실제 세 단계, 의미 있는 비교, 조건이 있는 완료 기준은 표현 형태만으로 바꾸지 않습니다.
 
@@ -70,6 +72,7 @@ metadata:
 - 실제 문제가 있는 구조와 호응을 고칩니다. 어미만 바꾸거나 추상어를 다른 추상어로 치환하고 완료하지 않습니다.
 - 제목·표 머리·캡션·차트 라벨·HTML 접근성 라벨·스크립트 안내문도 검토합니다. 의미를 확인할 수 없는 도식이나 작동 코드는 새로 해석하지 않습니다.
 - 요약을 본문의 조건·예외·추가 설계와 대조합니다. 사례 두 개를 모든 항목의 증거로 확대하거나 비교 범위를 바꾸지 않습니다.
+- 교정문이 새 슬롭을 만들지 않았는지 봅니다. 은유를 `배제`·`해당`·`결정` 같은 한자어 추상어로 바꾼 행, 원문에 없던 검사기 후보가 생긴 행, 원문보다 길어진 표 칸을 다시 고칩니다.
 - 결과를 원문과 다시 대조해 정보·서법·논리 관계가 바뀌면 해당 부분을 복원합니다.
 
 여러 절을 나눠 읽을 때는 용어 정의·선행 대상·조건이 있는 앞뒤 문맥을 함께 확인하고, 마지막에 문서 전체의 반복과 요약을 다시 대조합니다. 각 절의 짧은 단문을 줄였더라도 필수 조사·어미·조건절이 빠져 뜻이 흐려지면 복원합니다. 구체적인 비교 방법은 [긴 문서 검토](references/long-document-review.md)에 있습니다.
@@ -80,7 +83,7 @@ metadata:
 
 파일과 실행 환경이 있으면 `scripts/scan_slop.py`로 후보를 확인합니다. 스크립트 위치는 **이 SKILL.md가 있는 폴더 기준**이며 다른 작업 디렉터리에서는 절대경로로 실행합니다.
 
-검사기는 파일을 읽기만 하며 일부 표면 패턴을 표시합니다. `--hidden`은 HTML의 정적 라벨·메타 텍스트·JS 문자열도 포함하고, `--skip-quoted`는 코드 펜스와 한 줄 인용을 제외합니다. `--rules`는 레이어나 구현된 규칙 ID를 선택합니다. `L3-1`은 문자 접미사가 붙은 `L3-1a`도 포함합니다. 문맥 규칙 전체가 코드로 구현된 것은 아닙니다.
+검사기는 파일을 읽기만 하며 일부 표면 패턴을 표시합니다. `--hidden`은 HTML의 정적 라벨·메타 텍스트·JS 문자열도 포함하고, `--skip-quoted`는 코드 펜스와 한 줄 인용을 제외합니다. `--rules`는 레이어나 구현된 규칙 ID를 선택하고, `--exclude`는 후보가 많은 규칙(예: `L1-7`)을 뺍니다. `L3-1`은 문자 접미사가 붙은 `L3-1a`도 포함합니다. 교정을 마치면 `--baseline 원문 파일`로 교정본을 다시 검사해 교정이 새로 만든 후보를 확인합니다. 문맥 규칙 전체가 코드로 구현된 것은 아닙니다. 특히 L3-11 문서가 만든 라벨은 검사기가 찾지 못하므로 직접 읽어 확인합니다.
 
 후보는 문맥에서 판정합니다. 실행할 수 없으면 직접 검토를 계속하고 검사기 미실행을 밝힙니다. 미실행·오탐·미탐을 숨기거나 후보 수를 AI 작성 확률·교정 품질 점수로 보고하지 않습니다.
 
