@@ -2,6 +2,7 @@
 
 Usage:
     python scan_slop.py FILE [FILE ...] [--hidden] [--examples N] [--rules L2,L3-1]
+                        [--exclude L1-7] [--baseline ORIGINAL]
 
 Prints, per rule, how many candidates were found and a few examples with line numbers,
 followed by a sentence-ending (register) summary. The scanner only lists candidates;
@@ -9,9 +10,13 @@ whether each one is slop depends on context (technical terms, quotes, natural us
 --skip-quoted drops `code` spans and quoted examples, useful for scanning style guides.
 --hidden also scans HTML attribute text (aria-label, alt, title, placeholder),
 <title>, <desc>, <meta name="description"> and Korean string literals inside <script>.
+--exclude drops rules after --rules is applied (e.g. the frequent L1-7 commas).
+--baseline compares each FILE with the original text and lists matches that the edit
+added, so a correction that swaps one candidate for another can be reviewed.
 """
 import argparse
 import re
+from collections import Counter
 import sys
 from html.parser import HTMLParser
 from pathlib import Path
@@ -84,7 +89,12 @@ RULES = [
                                   r'|(?:꼼꼼히|꼼꼼하게|철저히|철저하게|빠짐없이)\s*(?:검토|확인|검증)(?:했|하였|한))'
                                   r'|(?:결함|한계|부족|타협|단점|실수|버그|누락)(?:이|가)?\s*아니라'
                                   rf'(?={SENT}{{0,25}}(?:의도|전략|의식|합리|선택|결정|설계|배제|트레이드오프))'),
+    # Arrows and (in)equality signs used as verbs between Korean phrases; math and code spans are masked.
+    ('L3-12', '기호를 문법으로 쓰는 행 후보', rf'[{H})]\s*(?:→|⇒|≠|≥|≤)\s*[{H}(]'),
 ]
+
+# Spans that L3-12 ignores: inline math and code, where the symbols are notation.
+NOTATION = re.compile(r'\$[^$\n]+\$|\\\([^\n]*?\\\)|(?<!`)(`+)(?!`)[^\n]*?\1(?!`)')
 
 SENT_END = re.compile(r'(?<=[.?!])\s+|\n+')
 ENDINGS = [
@@ -197,20 +207,52 @@ def load(path, hidden, skip_quoted=False):
     return text
 
 
-def scan(text, rules, n_examples, include_declarative=True):
+def collect(text, rules):
+    """Return {rule_id: [(line_no, matched_text, context), ...]}."""
     lines = text.split('\n')
-    print(f'{"규칙":7} {"건수":>4}  설명')
-    for rid, name, pat in rules:
+    found = {}
+    for rid, _name, pat in rules:
         rx = re.compile(pat)
         hits = []
         for i, line in enumerate(lines, 1):
             if rid == 'L2-6' and line.strip().startswith('읽기'):
                 continue
-            for m in rx.finditer(line):
+            target = NOTATION.sub(lambda m: ' ' * len(m.group(0)), line) if rid == 'L3-12' else line
+            for m in rx.finditer(target):
                 a, b = max(0, m.start() - 28), min(len(line), m.end() + 28)
-                hits.append((i, re.sub(r'\s+', ' ', line[a:b]).strip()))
+                hits.append((i, re.sub(r'\s+', ' ', m.group(0)).strip(),
+                             re.sub(r'\s+', ' ', line[a:b]).strip()))
+        found[rid] = hits
+    return found
+
+
+def report_added(found, base, rules, n_examples):
+    """Print matched strings that occur more often than in the baseline text."""
+    print('\n기준 원문보다 늘어난 후보(교정이 새로 만든 표현인지 확인)')
+    added_any = False
+    for rid, name, _pat in rules:
+        before = Counter(m for _i, m, _c in base.get(rid, []))
+        after = Counter(m for _i, m, _c in found.get(rid, []))
+        grown = {m: (before[m], n) for m, n in after.items() if n > before[m]}
+        if not grown:
+            continue
+        added_any = True
+        summary = ', '.join(f'{m} {a}→{b}' for m, (a, b) in sorted(grown.items(), key=lambda kv: -kv[1][1]))
+        print(f'{rid:7} {name}: {summary}')
+        lines_with_growth = dict.fromkeys((i, c) for i, m, c in found[rid] if m in grown)
+        for i, ctx in list(lines_with_growth)[:n_examples]:
+            print(f'          L{i}: …{ctx}…')
+    if not added_any:
+        print('  없음')
+
+
+def scan(text, rules, n_examples, include_declarative=True, base=None):
+    found = collect(text, rules)
+    print(f'{"규칙":7} {"건수":>4}  설명')
+    for rid, name, _pat in rules:
+        hits = found[rid]
         print(f'{rid:7} {len(hits):>4}  {name}')
-        for i, ctx in hits[:n_examples]:
+        for i, _m, ctx in hits[:n_examples]:
             print(f'          L{i}: …{ctx}…')
     # L3-1: runs of declarative endings
     sents = [re.sub(r'\s+', ' ', s).strip() for s in SENT_END.split(text)]
@@ -237,6 +279,8 @@ def scan(text, rules, n_examples, include_declarative=True):
     for name, rx in ENDINGS:
         print(f'  {name:28} {sum(1 for s in sents if rx.search(s)):>4}')
     print(f'  {"전체 문장·행":28} {len(sents):>4}')
+    if base is not None:
+        report_added(found, base, rules, n_examples)
 
 
 def selector_matches(rule_id, selector):
@@ -257,21 +301,39 @@ def main():
     ap.add_argument('--skip-quoted', action='store_true', help='백틱·따옴표 안의 예시 문구는 검사에서 제외')
     ap.add_argument('--examples', type=int, default=3)
     ap.add_argument('--rules', default=None, help='쉼표로 구분한 레이어 또는 규칙 ID(예: L2,L3-2)')
+    ap.add_argument('--exclude', default=None, help='검사에서 뺄 레이어 또는 규칙 ID(예: L1-7)')
+    ap.add_argument('--baseline', default=None, help='교정 전 원문. 교정본에서 늘어난 후보를 따로 표시')
     args = ap.parse_args()
     if args.examples < 0:
         ap.error('--examples는 0 이상이어야 합니다.')
-    prefixes = [p.strip() for p in args.rules.split(',')] if args.rules is not None else []
-    if args.rules is not None and (not prefixes or not all(prefixes)):
-        ap.error('--rules에는 레이어 또는 규칙 ID가 필요합니다.')
     available = [r[0] for r in RULES] + ['L3-1']
-    unknown = [p for p in prefixes if not any(selector_matches(r, p) for r in available)]
-    if unknown:
-        ap.error('검사기에 없는 레이어 또는 규칙 ID: ' + ', '.join(unknown))
-    rules = [r for r in RULES if not prefixes or any(selector_matches(r[0], p) for p in prefixes)]
-    include_declarative = not prefixes or any(selector_matches('L3-1', p) for p in prefixes)
+
+    def selectors(value, option):
+        if value is None:
+            return []
+        items = [p.strip() for p in value.split(',')]
+        if not items or not all(items):
+            ap.error(f'{option}에는 레이어 또는 규칙 ID가 필요합니다.')
+        unknown = [p for p in items if not any(selector_matches(r, p) for r in available)]
+        if unknown:
+            ap.error('검사기에 없는 레이어 또는 규칙 ID: ' + ', '.join(unknown))
+        return items
+
+    prefixes = selectors(args.rules, '--rules')
+    excluded = selectors(args.exclude, '--exclude')
+
+    def wanted(rule_id):
+        return ((not prefixes or any(selector_matches(rule_id, p) for p in prefixes))
+                and not any(selector_matches(rule_id, p) for p in excluded))
+
+    rules = [r for r in RULES if wanted(r[0])]
+    include_declarative = wanted('L3-1')
+    base = None
+    if args.baseline is not None:
+        base = collect(load(args.baseline, args.hidden, args.skip_quoted), rules)
     for f in args.files:
         print(f'=== {f}')
-        scan(load(f, args.hidden, args.skip_quoted), rules, args.examples, include_declarative)
+        scan(load(f, args.hidden, args.skip_quoted), rules, args.examples, include_declarative, base)
         print()
 
 

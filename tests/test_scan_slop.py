@@ -358,5 +358,49 @@ class ScanTests(unittest.TestCase):
                                  if line.lstrip().startswith('L') and ': …' in line]
                 self.assertEqual(len(example_lines), count)
 
+    def test_symbols_used_as_verbs_between_korean_phrases(self):
+        for text in ['범위: 복원 ≠ 생성(MAE)', '② 폭 ≥ 토큰 차원', '요약: 공유 표현 → 생성 이득', '(MAE) → 차원']:
+            with self.subTest(text=text):
+                self.assertEqual(self.run_scan(text, '--rules', 'L3-12')['L3-12'], 1)
+
+    def test_symbols_in_values_math_and_code_are_not_candidates(self):
+        text = ('8층→16층에서 Acc.는 오른다. 0.31 대 0.41. 수식 $d \\ge 토큰$과 \\(폭 ≥ 차원\\)\n'
+                '`입력 → 출력` 단계, ``토큰 ≠ 패치``, 값 3 → 5')
+        self.assertEqual(self.run_scan(text, '--rules', 'L3-12')['L3-12'], 0)
+
+    def test_exclude_removes_rules_after_selection(self):
+        text = '자료를 모으고, 정서의 결을 살립니다.'
+        counts = self.run_scan(text, '--exclude', 'L1-7')
+        self.assertNotIn('L1-7', counts)
+        self.assertEqual(counts['L2-10'], 1)
+        self.assertEqual(set(self.run_scan(text, '--rules', 'L1', '--exclude', 'L1-7')), {r for r in self.run_scan(text, '--rules', 'L1') if r != 'L1-7'})
+        self.assertNotIn('L3-1', self.run_scan('기록한다. 측정한다. 비교한다.', '--exclude', 'L3'))
+        for args in [('--exclude', 'L9'), ('--exclude', ',')]:
+            with self.subTest(args=args):
+                with self.assertRaises(subprocess.CalledProcessError) as context:
+                    self.run_scan(text, *args)
+                self.assertEqual(context.exception.returncode, 2)
+
+    def run_with_baseline(self, original, edited, *args):
+        with tempfile.TemporaryDirectory() as d:
+            base, target = Path(d) / 'original.txt', Path(d) / 'edited.txt'
+            base.write_text(original, encoding='utf-8')
+            target.write_text(edited, encoding='utf-8')
+            result = subprocess.run([sys.executable, str(SCRIPT), str(target), '--baseline', str(base), *args],
+                                    capture_output=True, encoding='utf-8', check=True)
+            self.assertEqual(base.read_text(encoding='utf-8'), original)
+            return result.stdout.split('기준 원문보다 늘어난 후보', 1)[1]
+
+    def test_baseline_reports_candidates_added_by_the_edit(self):
+        added = self.run_with_baseline('지운 설명과 남은 설명. 겨눈 비교.',
+                                       '통제 비교에서 배제된 설명과 남은 설명. 해당 비교. 따라서 해당 행을 본다.')
+        self.assertIn('해당 0→2', added)
+        self.assertIn('따라서 0→1', added)
+        self.assertNotIn('L2-1', added)
+
+    def test_baseline_ignores_candidates_already_in_the_original(self):
+        added = self.run_with_baseline('해당 값을 쓴다. 다양한 조건.', '해당 값을 쓴다. 여러 조건.')
+        self.assertIn('없음', added)
+
 if __name__ == '__main__':
     unittest.main()
