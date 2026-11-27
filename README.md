@@ -8,7 +8,7 @@
 
 [![의도적인 AI Slop 안내 배너와 문체 하이라이트가 표시된 AX 예제](assets/ax-ai-slop-preview.png)](https://ohheeseok.github.io/heeseok-korean-anti-slop/)
 
-AI 말투를 일부러 과장해 쓴 2페이지 문서입니다. ‘문체 표시’를 켜면 31개 구간에 색상이 표시되고, 문장을 누르면 원문과 고쳐 쓴 예시를 비교할 수 있습니다. 1.3.0에서 추가한 메타카피·규정·면책투·과잉 정당화 예시도 포함합니다. 내용을 보충한 예시는 ‘설명용 가상 상황’으로, 문체 교정만으로 정할 수 없는 부분은 ‘본문 밖 확인 사항’으로 구분합니다. 본문의 사업 주장과 보장 표현은 교육용 예시입니다.
+AI 말투를 일부러 과장해 쓴 2페이지 문서입니다. ‘문체 표시’를 켜면 33개 구간에 색상이 표시되고, 문장을 누르면 원문과 고쳐 쓴 예시를 비교할 수 있습니다. 1.3.0의 메타카피·규정·면책투·과잉 정당화와 1.4.0의 문서가 만든 라벨·기호 문법 예시도 포함합니다. 내용을 보충한 예시는 ‘설명용 가상 상황’으로, 문체 교정만으로 정할 수 없는 부분은 ‘본문 밖 확인 사항’으로 구분합니다. 본문의 사업 주장과 보장 표현은 교육용 예시입니다.
 
 ## 어떤 표현을 다루나요?
 
@@ -157,6 +157,7 @@ python scripts/scan_slop.py edited.md --baseline original.md
 ## 세부 지침과 검토 기록
 
 - [SKILL.md](SKILL.md): 요청 범위, 의미 보존, 작업·보고 방식
+- 규칙별 기준: [L1 구조·반복 문형](references/layer1-translationese.md), [L2 은유·경구](references/layer2-metaphor-aphorism.md), [L3 압축·연어·라벨·규정·정당화](references/layer3-manifesto-collocation.md), [어미 가이드](references/register-guide.md)
 - [발표자료](references/presentation-prose.md): 가짜 대조, 목적 없는 공동 검토, 감각적 추상어 등 8유형
 - [강의·실습 자료](references/lecture-prose.md): 신체·공간 비유, 시연용 인용, 실제 절차와 완료 조건
 - [논문·기술 해설](references/technical-explanation.md): 병목 진단, 캐릭터화, 근거와 보장 범위
